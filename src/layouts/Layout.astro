@@ -1,11 +1,19 @@
+---
+import BaseHead from "@/components/common/BaseHead.astro";
+
+interface Props {
+  title: string;
+  desc: string;
+  image?: ImageMetadata;
+}
+
+let { title, desc, image = undefined } = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <BaseHead title={title} desc={desc} image={image} />
   </head>
   <body>
     <slot />
