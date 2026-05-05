@@ -4,6 +4,13 @@ import IconGitHub from "@/assets/icons/IconGitHub.svg";
 
 export const SITE = {
   title_suffix: " | Fuxi's blog",
+  navs: [
+    { label: "Moments", href: "/moments" },
+    { label: "Posts", href: "/posts" },
+    { label: "Archives", href: "/archives" },
+    { label: "Friends", href: "/friends" },
+    { label: "About", href: "/about" },
+  ],
   socials: [
     {
       name: "Mail",
