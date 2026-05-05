@@ -2,7 +2,6 @@
 import "@/styles/global.css";
 import type { ImageMetadata } from "astro";
 import FallbackImage from "@/assets/placeholder.png";
-import { SITE } from "@/config";
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
@@ -12,8 +11,7 @@ interface Props {
   image?: ImageMetadata;
 }
 
-let { title, desc, image = FallbackImage } = Astro.props;
-title = title + SITE.title_suffix;
+const { title, desc, image = FallbackImage } = Astro.props;
 ---
 
 <!-- Global Metadata -->

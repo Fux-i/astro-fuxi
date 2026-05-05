@@ -1,0 +1,28 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import IconI18n from "@/assets/icons/IconI18n.svg";
+import { getT, type Lang } from "@/i18n/ui";
+
+const { lang: currentLang, t } = getT(Astro.currentLocale);
+const otherLang: Lang = currentLang === "en" ? "zh" : "en";
+
+// Strip leading "/<currentLang>" from the current pathname
+const pathname = Astro.url.pathname;
+const prefix = `/${currentLang}`;
+let stripped = pathname.startsWith(prefix)
+  ? pathname.slice(prefix.length)
+  : pathname;
+// Drop leading slash; getRelativeLocaleUrl expects a path segment
+stripped = stripped.replace(/^\/+/, "");
+
+const targetHref = getRelativeLocaleUrl(otherLang, stripped);
+
+const title = t("btn.lang_switch");
+
+const iconBtn =
+  "relative inline-flex items-center justify-center size-10 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer";
+---
+
+<a href={targetHref} title={title} class={iconBtn}>
+  <IconI18n class="size-5" />
+</a>

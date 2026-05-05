@@ -13,7 +13,7 @@ let { title, desc, image = undefined } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={Astro.currentLocale ?? "en"}>
   <head>
     <BaseHead title={title} desc={desc} image={image} />
     <ThemeScript />

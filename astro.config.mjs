@@ -11,6 +11,16 @@ export default defineConfig({
     open: true
   },
 
+  i18n: {
+    locales: ['en', 'zh'],
+    defaultLocale: 'en',
+    routing: { prefixDefaultLocale: true },
+  },
+
+  redirects: {
+    '/': '/en/',
+  },
+
   vite: {
     plugins: [tailwindcss()],
   },
