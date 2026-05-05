@@ -1,0 +1,109 @@
+---
+import IconX from "@/assets/icons/IconX.svg";
+import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
+import IconMoon from "@/assets/icons/IconMoon.svg";
+import IconSearch from "@/assets/icons/IconSearch.svg";
+import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
+import IconComputer from "@/assets/icons/IconComputer.svg";
+import { SITE } from "@/config";
+
+const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (p: string) => pathname === p || pathname.startsWith(p + "/");
+
+const navs = SITE.navs;
+
+const linkBase =
+  "px-3 py-1.5 rounded-md text-base hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors";
+const linkActive = "underline-offset-2 bg-gray-100 dark:bg-gray-800";
+const iconBtn =
+  "relative inline-flex items-center justify-center size-10 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer";
+---
+
+<header class="w-full px-4">
+  <div class="mx-auto flex h-16 max-w-5xl items-center gap-2">
+    <a
+      href="/"
+      class="flex items-center gap-2 px-2 py-1 rounded-md transition-colors"
+    >
+      <img src="/favicon.png" alt="Fuxi's blog" class="size-7" />
+      <span class="text-lg font-semibold"> Fuxi's blog </span>
+    </a>
+
+    <div class="flex-1"></div>
+
+    <nav class="flex items-center gap-1 ml-2">
+      {
+        navs.map((n) => (
+          <a
+            href={n.href}
+            class:list={[linkBase, isActive(n.href) && linkActive]}
+          >
+            {n.label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="h-4 bg-gray-400 dark:bg-gray-600 w-px"></div>
+
+    <button type="button" class={iconBtn}>
+      <IconSearch class="size-5" />
+    </button>
+
+    <button type="button" id="theme-toggle" class={iconBtn} data-pref="system">
+      <IconSunHigh class="size-5" data-icon="light" />
+      <IconMoon class="size-5" data-icon="dark" />
+      <IconComputer class="size-5" data-icon="system" />
+    </button>
+  </div>
+</header>
+
+<script>
+  type Theme = "system" | "light" | "dark";
+  const KEY = "theme";
+  const order: Theme[] = ["system", "light", "dark"];
+
+  const mql = window.matchMedia("(prefers-color-scheme: dark)");
+
+  const getTheme = (): Theme =>
+    (localStorage.getItem(KEY) as Theme) || "system";
+
+  const apply = (t: Theme) => {
+    const isDark = t === "dark" || (t === "system" && mql.matches);
+    const root = document.documentElement;
+    root.classList.toggle("dark", isDark);
+    root.style.colorScheme = isDark ? "dark" : "light";
+    if (btn) {
+      btn.dataset.pref = t;
+    }
+  };
+
+  const btn = document.getElementById("theme-toggle");
+  btn?.addEventListener("click", () => {
+    const next = order[(order.indexOf(getTheme()) + 1) % order.length];
+    if (next === "system") localStorage.removeItem(KEY);
+    else localStorage.setItem(KEY, next);
+    apply(next);
+  });
+
+  mql.addEventListener("change", () => {
+    if (getTheme() === "system") apply("system");
+  });
+
+  apply(getTheme());
+</script>
+
+<style>
+  /* Stack icons and animate the active one in */
+  #theme-toggle [data-icon] {
+    position: absolute;
+    scale: 0;
+    rotate: -90deg;
+    transition: all 0.3s ease;
+  }
+  #theme-toggle[data-pref="light"] [data-icon="light"],
+  #theme-toggle[data-pref="dark"] [data-icon="dark"],
+  #theme-toggle[data-pref="system"] [data-icon="system"] {
+    scale: 1;
+    rotate: 0deg;
+  }
+</style>

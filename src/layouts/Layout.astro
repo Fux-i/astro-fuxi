@@ -1,5 +1,7 @@
 ---
 import BaseHead from "@/components/common/BaseHead.astro";
+import Header from "@/components/common/Header.astro";
+import ThemeScript from "@/components/common/ThemeScript.astro";
 
 interface Props {
   title: string;
@@ -14,8 +16,10 @@ let { title, desc, image = undefined } = Astro.props;
 <html lang="en">
   <head>
     <BaseHead title={title} desc={desc} image={image} />
+    <ThemeScript />
   </head>
-  <body>
+  <body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+    <Header />
     <slot />
   </body>
 </html>
