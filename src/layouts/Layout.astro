@@ -2,6 +2,7 @@
 import BaseHead from "@/components/common/BaseHead.astro";
 import Header from "@/components/common/Header.astro";
 import ThemeScript from "@/components/common/ThemeScript.astro";
+import Footer from "@/components/common/Footer.astro";
 
 interface Props {
   title: string;
@@ -21,6 +22,7 @@ let { title, desc, image = undefined } = Astro.props;
   <body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
     <Header />
     <slot />
+    <Footer />
   </body>
 </html>
 
