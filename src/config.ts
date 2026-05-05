@@ -3,6 +3,7 @@ import IconZhihu from "@/assets/icons/IconZhihu.svg";
 import IconGitHub from "@/assets/icons/IconGitHub.svg";
 
 export const SITE = {
+  author: "Fuxi",
   navs: [
     { key: "nav.moments", href: "moments" },
     { key: "nav.posts", href: "posts" },
