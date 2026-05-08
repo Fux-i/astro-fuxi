@@ -38,9 +38,9 @@ const iconBtn =
       <span class="text-lg font-semibold">{t("site.title")}</span>
     </a>
 
-    <div class="flex-1"></div>
+    <placeholder class="flex-1"></placeholder>
 
-    <nav class="flex items-center gap-1 ml-2">
+    <nav class="flex items-center gap-1">
       {
         navs.map((n) => (
           <a
@@ -52,34 +52,38 @@ const iconBtn =
         ))
       }
     </nav>
-    <div class="h-4 bg-gray-400 dark:bg-gray-600 w-px"></div>
 
-    <button type="button" title={t("btn.search")} class={iconBtn}>
-      <IconSearch class="size-5" />
-    </button>
+    <divider class="h-4 bg-gray-400 dark:bg-gray-600 w-px"></divider>
 
-    <button
-      type="button"
-      title={t("btn.theme")}
-      id="theme-toggle"
-      class={iconBtn}
-      data-pref="system"
-    >
-      <IconSunHigh class="size-5" data-icon="light" />
-      <IconMoon class="size-5" data-icon="dark" />
-      <IconComputer class="size-5" data-icon="system" />
-    </button>
+    <tool-bar class="flex items-center gap-1">
+      <button type="button" title={t("btn.search")} class={iconBtn}>
+        <IconSearch class="size-5" />
+      </button>
+      <button
+        type="button"
+        title={t("btn.theme")}
+        id="theme-toggle"
+        class={iconBtn}
+        data-pref="system"
+      >
+        <IconSunHigh class="size-5" data-icon="light" />
+        <IconMoon class="size-5" data-icon="dark" />
+        <IconComputer class="size-5" data-icon="system" />
+      </button>
+      <LangSwitch />
+    </tool-bar>
 
-    <LangSwitch />
-    <div class="h-4 bg-gray-400 dark:bg-gray-600 w-px"></div>
+    <divider class="h-4 bg-gray-400 dark:bg-gray-600 w-px"></divider>
 
-    {
-      socials.map((s) => (
-        <a href={s.href} title={t(s.key)} class={iconBtn} target="_blank">
-          <s.icon class="size-5" />
-        </a>
-      ))
-    }
+    <contacts class="flex items-center gap-1">
+      {
+        socials.map((s) => (
+          <a href={s.href} title={t(s.key)} class={iconBtn} target="_blank">
+            <s.icon class="size-5" />
+          </a>
+        ))
+      }
+    </contacts>
   </div>
 </header>
 
