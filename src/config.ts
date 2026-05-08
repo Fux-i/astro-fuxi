@@ -4,6 +4,7 @@ import IconGitHub from "@/assets/icons/IconGitHub.svg";
 
 export const SITE = {
   author: "Fuxi",
+  favicon: "/favicon.png",
   navs: [
     { key: "nav.moments", href: "moments" },
     { key: "nav.posts", href: "posts" },
