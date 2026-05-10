@@ -32,7 +32,7 @@ const iconBtn =
 <header
   class="sticky top-0 w-full px-4 backdrop-blur-md border-b border-gray-300 dark:border-gray-700"
 >
-  <div class:list={[page_width, "flex mx-auto h-16 items-center gap-2"]}>
+  <container class:list={[page_width, "flex mx-auto h-16 items-center"]}>
     <a
       href={getRelativeLocaleUrl(lang, "")}
       class="flex items-center gap-2 px-2 py-1 rounded-md transition-colors"
@@ -56,9 +56,8 @@ const iconBtn =
       }
     </nav>
 
-    <divider class="h-4 bg-gray-400 dark:bg-gray-600 w-px"></divider>
-
     <tool-bar class="flex items-center gap-1">
+      <divider class="h-4 ml-1 bg-gray-400 dark:bg-gray-600 w-px"></divider>
       <button type="button" title={t("btn.search")} class={iconBtn}>
         <IconSearch class="size-5" />
       </button>
@@ -76,9 +75,8 @@ const iconBtn =
       <LangSwitch />
     </tool-bar>
 
-    <divider class="h-4 bg-gray-400 dark:bg-gray-600 w-px"></divider>
-
     <contacts class="flex items-center gap-1">
+      <divider class="h-4 ml-1 bg-gray-400 dark:bg-gray-600 w-px"></divider>
       {
         socials.map((s) => (
           <a href={s.href} title={t(s.key)} class={iconBtn} target="_blank">
@@ -87,7 +85,7 @@ const iconBtn =
         ))
       }
     </contacts>
-  </div>
+  </container>
 </header>
 
 <script>
