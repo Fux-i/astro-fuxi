@@ -3,6 +3,12 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import IconI18n from "@/assets/icons/IconI18n.svg";
 import { getT, type Lang } from "@/i18n/ui";
 
+interface Props {
+  isMobile: Boolean;
+}
+
+const { isMobile } = Astro.props;
+
 const { lang: currentLang, t } = getT(Astro.currentLocale);
 const otherLang: Lang = currentLang === "en" ? "zh" : "en";
 
@@ -20,9 +26,10 @@ const targetHref = getRelativeLocaleUrl(otherLang, stripped);
 const title = t("btn.lang_switch");
 
 const iconBtn =
-  "relative inline-flex items-center justify-center size-10 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer";
+  "relative inline-flex items-center justify-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer " +
+  (isMobile ? "size-10" : "size-8");
 ---
 
 <a href={targetHref} title={title} class={iconBtn}>
-  <IconI18n class="size-5" />
+  <IconI18n class={isMobile ? "size-7" : "size-5"} />
 </a>

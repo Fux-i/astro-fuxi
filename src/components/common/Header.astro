@@ -26,13 +26,15 @@ const linkBase =
   "px-3 py-1.5 rounded-md text-base hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors";
 const linkActive = "underline-offset-2 bg-gray-100 dark:bg-gray-800";
 const iconBtn =
-  "relative inline-flex items-center justify-center size-10 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer";
+  "relative inline-flex items-center justify-center size-8 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer";
 ---
 
 <header
   class="sticky top-0 w-full px-4 backdrop-blur-md border-b border-gray-300 dark:border-gray-700"
 >
-  <container class:list={[page_width, "flex mx-auto h-16 items-center"]}>
+  <container
+    class:list={[page_width, "relative flex mx-auto h-16 items-center"]}
+  >
     <a
       href={getRelativeLocaleUrl(lang, "")}
       class="flex items-center gap-2 px-2 py-1 rounded-md transition-colors"
@@ -56,8 +58,9 @@ const iconBtn =
       }
     </nav>
 
+    <placeholder class="flex-1"></placeholder>
+
     <tool-bar class="flex items-center gap-1">
-      <divider class="h-4 ml-1 bg-gray-400 dark:bg-gray-600 w-px"></divider>
       <button type="button" title={t("btn.search")} class={iconBtn}>
         <IconSearch class="size-5" />
       </button>
@@ -72,7 +75,7 @@ const iconBtn =
         <IconMoon class="size-5" data-icon="dark" />
         <IconComputer class="size-5" data-icon="system" />
       </button>
-      <LangSwitch />
+      <LangSwitch isMobile={false} />
     </tool-bar>
 
     <contacts class="flex items-center gap-1">
@@ -85,6 +88,66 @@ const iconBtn =
         ))
       }
     </contacts>
+
+    <button
+      type="button"
+      title={t("btn.search")}
+      class:list={[iconBtn, "ml-1 hidden!"]}
+    >
+      <IconMenuDeep class="size-5" />
+    </button>
+
+    <menu
+      class="absolute right-0 top-12 bg-white dark:bg-gray-900 rounded-2xl border-gray-500 border overflow-hidden p-2"
+    >
+      <nav class="flex flex-col items-center w-40 mb-1">
+        {
+          navs.map((n) => (
+            <a
+              href={getRelativeLocaleUrl(lang, n.href)}
+              class="text-center w-full py-3 border-b border-gray-300 hover:underline"
+            >
+              {t(n.key)}
+            </a>
+          ))
+        }
+      </nav>
+      <tool-bar class="flex justify-center items-center gap-1">
+        <button
+          type="button"
+          title={t("btn.search")}
+          class:list={[iconBtn, "size-10"]}
+        >
+          <IconSearch class="size-7" />
+        </button>
+        <button
+          type="button"
+          title={t("btn.theme")}
+          id="theme-toggle"
+          class:list={[iconBtn, "size-10"]}
+          data-pref="system"
+        >
+          <IconSunHigh class="size-7" data-icon="light" />
+          <IconMoon class="size-7" data-icon="dark" />
+          <IconComputer class="size-7" data-icon="system" />
+        </button>
+        <LangSwitch isMobile={true} />
+      </tool-bar>
+      <contacts class="flex justify-center items-center gap-1">
+        {
+          socials.map((s) => (
+            <a
+              href={s.href}
+              title={t(s.key)}
+              class:list={[iconBtn, "size-10"]}
+              target="_blank"
+            >
+              <s.icon class="size-7" />
+            </a>
+          ))
+        }
+      </contacts>
+    </menu>
   </container>
 </header>
 
