@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+@source inline("max-w-{3xl,4xl,5xl,6xl,7xl}");
 
 * {
   box-sizing: border-box;
