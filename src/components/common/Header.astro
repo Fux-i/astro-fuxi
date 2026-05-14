@@ -37,7 +37,8 @@ const iconBtn =
   >
     <a
       href={getRelativeLocaleUrl(lang, "")}
-      class="flex items-center gap-2 px-2 py-1 rounded-md transition-colors"
+      id="title"
+      class="flex items-center gap-2 px-2 py-1 rounded-md"
     >
       <img src={SITE.favicon} alt={t("site.title")} class="size-7" />
       <span class="text-lg font-semibold">{t("site.title")}</span>
@@ -67,8 +68,7 @@ const iconBtn =
       <button
         type="button"
         title={t("btn.theme")}
-        id="theme-toggle"
-        class={iconBtn}
+        class:list={[iconBtn, "theme-toggle"]}
         data-pref="system"
       >
         <IconSunHigh class="size-5" data-icon="light" />
@@ -123,8 +123,7 @@ const iconBtn =
         <button
           type="button"
           title={t("btn.theme")}
-          id="theme-toggle"
-          class:list={[iconBtn, "size-10"]}
+          class:list={[iconBtn, "theme-toggle size-10"]}
           data-pref="system"
         >
           <IconSunHigh class="size-7" data-icon="light" />
@@ -166,19 +165,18 @@ const iconBtn =
     const root = document.documentElement;
     root.classList.toggle("dark", isDark);
     root.style.colorScheme = isDark ? "dark" : "light";
-    if (btn) {
-      btn.dataset.pref = t;
-    }
+    btns.forEach((b) => ((b as HTMLElement).dataset.pref = t));
   };
 
-  const btn = document.getElementById("theme-toggle");
-  btn?.addEventListener("click", () => {
-    const next = order[(order.indexOf(getTheme()) + 1) % order.length];
-    if (next === "system") localStorage.removeItem(KEY);
-    else localStorage.setItem(KEY, next);
-    apply(next);
+  const btns = document.querySelectorAll(".theme-toggle");
+  btns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const next = order[(order.indexOf(getTheme()) + 1) % order.length];
+      if (next === "system") localStorage.removeItem(KEY);
+      else localStorage.setItem(KEY, next);
+      apply(next);
+    });
   });
-
   mql.addEventListener("change", () => {
     if (getTheme() === "system") apply("system");
   });
@@ -188,15 +186,15 @@ const iconBtn =
 
 <style>
   /* Stack icons and animate the active one in */
-  #theme-toggle [data-icon] {
+  .theme-toggle [data-icon] {
     position: absolute;
     scale: 0;
     rotate: -90deg;
     transition: all 0.3s ease;
   }
-  #theme-toggle[data-pref="light"] [data-icon="light"],
-  #theme-toggle[data-pref="dark"] [data-icon="dark"],
-  #theme-toggle[data-pref="system"] [data-icon="system"] {
+  .theme-toggle[data-pref="light"] [data-icon="light"],
+  .theme-toggle[data-pref="dark"] [data-icon="dark"],
+  .theme-toggle[data-pref="system"] [data-icon="system"] {
     scale: 1;
     rotate: 0deg;
   }
