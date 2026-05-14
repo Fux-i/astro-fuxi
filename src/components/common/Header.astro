@@ -33,6 +33,7 @@ const iconBtn =
   class="sticky top-0 w-full px-4 backdrop-blur-md border-b border-gray-300 dark:border-gray-700"
 >
   <container
+    id="header-container"
     class:list={[page_width, "relative flex mx-auto h-16 items-center"]}
   >
     <a
@@ -91,14 +92,23 @@ const iconBtn =
 
     <button
       type="button"
-      title={t("btn.search")}
-      class:list={[iconBtn, "ml-1 hidden!"]}
+      title={t("btn.menu")}
+      id="menu-btn"
+      class:list={[iconBtn, "ml-auto hidden"]}
     >
-      <IconMenuDeep class="size-5" />
+      <IconMenuDeep class="size-7" />
+    </button>
+    <button
+      type="button"
+      title={t("btn.x")}
+      id="x-btn"
+      class:list={[iconBtn, "ml-auto hidden"]}
+    >
+      <IconX class="size-7" />
     </button>
 
     <menu
-      class="absolute right-0 top-12 bg-white dark:bg-gray-900 rounded-2xl border-gray-500 border overflow-hidden p-2"
+      class="absolute right-0 top-12 bg-white dark:bg-gray-900 rounded-2xl border-gray-500 border overflow-hidden p-2 flex-col"
     >
       <nav class="flex flex-col items-center w-40 mb-1">
         {
@@ -182,6 +192,41 @@ const iconBtn =
   });
 
   apply(getTheme());
+
+  // responsive
+  const container = document.getElementById("header-container")!;
+  const menuBtn = document.getElementById("menu-btn")!;
+  const xBtn = document.getElementById("x-btn")!;
+  const menu = container.querySelector("menu")!;
+  let expandWidth = 0;
+  let collapsed = false;
+
+  for (const child of container.children) {
+    if (child === menu || child.tagName === "PLACEHOLDER") continue;
+    expandWidth += (child as HTMLElement).offsetWidth;
+    console.log(child.tagName + ": " + (child as HTMLElement).offsetWidth);
+  }
+
+  function update(containerW: number) {
+    if (!collapsed) {
+      if (containerW <= expandWidth) {
+        collapsed = true;
+        container.classList.add("collapsed");
+      }
+    } else if (containerW > expandWidth) {
+      collapsed = false;
+      container.classList.remove("collapsed");
+      container.classList.remove("open");
+    }
+  }
+
+  new ResizeObserver((entries) => {
+    update(entries[0].contentRect.width);
+  }).observe(container);
+
+  const toggleMenu = () => container.classList.toggle("open");
+  menuBtn.addEventListener("click", toggleMenu);
+  xBtn.addEventListener("click", toggleMenu);
 </script>
 
 <style>
@@ -197,5 +242,32 @@ const iconBtn =
   .theme-toggle[data-pref="system"] [data-icon="system"] {
     scale: 1;
     rotate: 0deg;
+  }
+
+  /* Responsive collapse */
+  #menu-btn,
+  #x-btn,
+  menu {
+    display: none;
+  }
+  #header-container.collapsed {
+    & > nav,
+    & > tool-bar,
+    & > contacts,
+    & > placeholder {
+      display: none;
+    }
+    & > #menu-btn {
+      display: inline-flex;
+    }
+    &.open > #menu-btn {
+      display: none;
+    }
+    &.open > #x-btn {
+      display: inline-flex;
+    }
+    &.open > menu {
+      display: flex;
+    }
   }
 </style>
