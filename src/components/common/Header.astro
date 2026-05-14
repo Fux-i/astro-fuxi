@@ -90,22 +90,26 @@ const iconBtn =
       }
     </contacts>
 
-    <button
-      type="button"
-      title={t("btn.menu")}
-      id="menu-btn"
-      class:list={[iconBtn, "ml-auto hidden"]}
+    <toggle-btn
+      class="relative ml-auto hidden items-center justify-center size-8"
     >
-      <IconMenuDeep class="size-7" />
-    </button>
-    <button
-      type="button"
-      title={t("btn.x")}
-      id="x-btn"
-      class:list={[iconBtn, "ml-auto hidden"]}
-    >
-      <IconX class="size-7" />
-    </button>
+      <button
+        type="button"
+        title={t("btn.menu")}
+        id="menu-btn"
+        class:list={[iconBtn, "absolute inset-0"]}
+      >
+        <IconMenuDeep class="size-7" />
+      </button>
+      <button
+        type="button"
+        title={t("btn.x")}
+        id="x-btn"
+        class:list={[iconBtn, "absolute inset-0"]}
+      >
+        <IconX class="size-7" />
+      </button>
+    </toggle-btn>
 
     <menu
       class="absolute right-0 top-12 bg-white dark:bg-gray-900 rounded-2xl border-gray-500 border overflow-hidden p-2 flex-col"
@@ -198,13 +202,17 @@ const iconBtn =
   const menuBtn = document.getElementById("menu-btn")!;
   const xBtn = document.getElementById("x-btn")!;
   const menu = container.querySelector("menu")!;
-  let expandWidth = 0;
+  let expandWidth = 60;
   let collapsed = false;
 
   for (const child of container.children) {
-    if (child === menu || child.tagName === "PLACEHOLDER") continue;
+    if (
+      child === menu ||
+      child.tagName === "PLACEHOLDER" ||
+      child.tagName === "TOGGLE-BTN"
+    )
+      continue;
     expandWidth += (child as HTMLElement).offsetWidth;
-    console.log(child.tagName + ": " + (child as HTMLElement).offsetWidth);
   }
 
   function update(containerW: number) {
@@ -245,10 +253,25 @@ const iconBtn =
   }
 
   /* Responsive collapse */
-  #menu-btn,
-  #x-btn,
+  toggle-btn,
   menu {
     display: none;
+  }
+  #menu-btn,
+  #x-btn {
+    position: absolute;
+    inset: 0;
+  }
+  #menu-btn {
+    scale: 1;
+    /* at scale:1 → next move is shrink → ease-in */
+    transition: scale 0.15s ease-in;
+  }
+  #x-btn {
+    scale: 0;
+    pointer-events: none;
+    /* at scale:0 → next move is grow → bounce */
+    transition: scale 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   #header-container.collapsed {
     & > nav,
@@ -257,17 +280,23 @@ const iconBtn =
     & > placeholder {
       display: none;
     }
-    & > #menu-btn {
-      display: inline-flex;
-    }
-    &.open > #menu-btn {
-      display: none;
-    }
-    &.open > #x-btn {
+    & > toggle-btn {
       display: inline-flex;
     }
     &.open > menu {
       display: flex;
+    }
+    &.open #menu-btn {
+      scale: 0;
+      pointer-events: none;
+      /* now at scale:0 → next move is grow → bounce */
+      transition: scale 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    &.open #x-btn {
+      scale: 1;
+      pointer-events: auto;
+      /* now at scale:1 → next move is shrink → ease-in */
+      transition: scale 0.15s ease-in;
     }
   }
 </style>
