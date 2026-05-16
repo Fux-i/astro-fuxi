@@ -27,6 +27,11 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
 
+  markdown: {
+    remarkPlugins: ['remark-math'],
+    rehypePlugins: ['rehype-katex'],
+  },
+
   integrations: [
     expressiveCode({
       themes: ['one-light', 'one-dark-pro'],
