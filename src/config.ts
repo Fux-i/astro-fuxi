@@ -9,7 +9,7 @@ export const SITE = {
   navs: [
     { key: "nav.moments", href: "moments" },
     { key: "nav.posts", href: "posts" },
-    { key: "nav.archives", href: "archives" },
+    // { key: "nav.archives", href: "archives" },
     { key: "nav.friends", href: "friends" },
     { key: "nav.about", href: "about" },
   ],
