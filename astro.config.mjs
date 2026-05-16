@@ -2,6 +2,8 @@
 import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
+import expressiveCode from 'astro-expressive-code';
+import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers';
 
 // https://astro.build/config
 export default defineConfig({
@@ -24,4 +26,11 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  integrations: [
+    expressiveCode({
+      themes: ['one-light', 'one-dark-pro'],
+      plugins: [pluginLineNumbers(),]
+    }),
+  ],
 });

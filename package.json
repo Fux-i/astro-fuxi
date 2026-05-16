@@ -12,8 +12,10 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@expressive-code/plugin-line-numbers": "^0.42.0",
     "@tailwindcss/vite": "^4.2.4",
     "astro": "^6.2.1",
+    "astro-expressive-code": "^0.42.0",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.2.4"
   }
