@@ -1,0 +1,131 @@
+/* Markdown article typography. Applied via .article container.
+   Use .no-article on embedded components to opt out. */
+
+.article {
+  font-size: 1rem;
+  line-height: 1.75;
+
+  & :where(h1):not(.no-article *) {
+    margin-block: 0.5em 1em;
+    font-size: 2em;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  & :where(h2):not(.no-article *) {
+    margin-block: 2em 0.8em;
+    font-size: 1.5em;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  & :where(h3):not(.no-article *) {
+    margin-block: 1.6em 0.6em;
+    font-size: 1.25em;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  & :where(h4):not(.no-article *) {
+    margin-block: 1.4em 0.5em;
+    font-size: 1.1em;
+    font-weight: 600;
+  }
+
+  & :where(h5, h6):not(.no-article *) {
+    margin-block: 1.2em 0.4em;
+    font-size: 1em;
+    font-weight: 600;
+  }
+
+  & :where(p):not(.no-article *) {
+    margin-block: 1em;
+  }
+
+  & :where(a):not(.no-article *) {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  & :where(strong):not(.no-article *) {
+    font-weight: 600;
+  }
+
+  & :where(ul, ol):not(.no-article *) {
+    margin-block: 1em;
+    padding-inline-start: 1.6em;
+  }
+
+  & :where(ul):not(.no-article *) {
+    list-style: disc;
+  }
+
+  & :where(ol):not(.no-article *) {
+    list-style: decimal;
+  }
+
+  & :where(li):not(.no-article *) {
+    margin-block: 0.4em;
+  }
+
+  /* tighten nested lists */
+  & :where(li > ul, li > ol):not(.no-article *) {
+    margin-block: 0.4em;
+  }
+
+  & :where(blockquote):not(.no-article *) {
+    margin-block: 1.2em;
+    padding-inline-start: 1em;
+    border-inline-start: 0.25rem solid gray;
+    color: color-mix(in srgb, currentColor 85%, transparent);
+    font-style: italic;
+  }
+
+  /* inline code (not inside <pre>) */
+  & :where(code):not(:where(pre code), .no-article *) {
+    padding: 0.15em 0.35em;
+    margin: 0 0.15em;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+    background: color-mix(in srgb, currentColor 10%, transparent);
+  }
+
+  & :where(img):not(.no-article *) {
+    display: block;
+    margin-inline: auto;
+    margin-block: 1.2em;
+    max-width: 100%;
+    height: auto;
+  }
+
+  & :where(table):not(.no-article *) {
+    margin-block: 1.2em;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  & :where(th, td):not(.no-article *) {
+    padding: 0.5em 0.8em;
+    border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+    text-align: start;
+  }
+
+  & :where(th):not(.no-article *) {
+    font-weight: 600;
+    background: color-mix(in srgb, currentColor 5%, transparent);
+  }
+
+  & :where(hr):not(.no-article *) {
+    margin-block: 2em;
+    border: 0;
+    border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  }
+
+  & :where(kbd):not(.no-article *) {
+    padding: 0.15em 0.4em;
+    border-radius: 0.25rem;
+    border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+    font-size: 0.85em;
+    font-family: inherit;
+  }
+}

@@ -13,7 +13,12 @@ let { title, desc, image = undefined } = Astro.props;
 ---
 
 <Layout title={title} desc={desc} image={image}>
-  <main class:list={[page_width, "mx-auto px-8 py-4"]}>
+  <article
+    class:list={[
+      page_width,
+      "bg-white dark:bg-gray-900 mx-auto px-8 py-4 article",
+    ]}
+  >
     <slot />
-  </main>
+  </article>
 </Layout>
