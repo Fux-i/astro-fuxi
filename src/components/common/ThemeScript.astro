@@ -11,7 +11,6 @@
       (stored !== "light" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches);
     const root = document.documentElement;
-    root.classList.toggle("dark", isDark);
-    root.style.colorScheme = isDark ? "dark" : "light";
+    root.dataset.theme = isDark ? "dark" : "light";
   })();
 </script>

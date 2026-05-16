@@ -177,8 +177,7 @@ const iconBtn =
   const apply = (t: Theme) => {
     const isDark = t === "dark" || (t === "system" && mql.matches);
     const root = document.documentElement;
-    root.classList.toggle("dark", isDark);
-    root.style.colorScheme = isDark ? "dark" : "light";
+    root.dataset.theme = isDark ? "dark" : "light";
     btns.forEach((b) => ((b as HTMLElement).dataset.pref = t));
   };
 

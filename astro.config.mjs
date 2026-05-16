@@ -30,6 +30,8 @@ export default defineConfig({
   integrations: [
     expressiveCode({
       themes: ['one-light', 'one-dark-pro'],
+      themeCssSelector: (theme) => `[data-theme="${theme.type}"]`,
+      useDarkModeMediaQuery: false,
       plugins: [pluginLineNumbers(),]
     }),
   ],
