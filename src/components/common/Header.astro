@@ -30,7 +30,8 @@ const iconBtn =
 ---
 
 <header
-  class="sticky top-0 w-full px-4 bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 z-50"
+  id="site-header"
+  class="fixed top-0 left-0 right-0 px-4 bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 z-50 transition-transform duration-300 will-change-transform"
 >
   <container
     id="header-container"
@@ -234,9 +235,45 @@ const iconBtn =
   const toggleMenu = () => container.classList.toggle("open");
   menuBtn.addEventListener("click", toggleMenu);
   xBtn.addEventListener("click", toggleMenu);
+
+  // Hide on scroll down, show on scroll up
+  const header = document.getElementById("site-header")!;
+  const THRESHOLD = 10;
+  let lastY = window.scrollY;
+  let ticking = false;
+
+  const onScroll = () => {
+    const y = window.scrollY;
+    const dy = y - lastY;
+    if (Math.abs(dy) < THRESHOLD || container.classList.contains("open")) {
+      ticking = false;
+      return;
+    }
+    if (dy > 0 && y > header.offsetHeight)
+      header.classList.add("header-hidden");
+    else if (dy < 0) header.classList.remove("header-hidden");
+    lastY = y;
+    ticking = false;
+  };
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!ticking) {
+        requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    },
+    { passive: true },
+  );
 </script>
 
 <style>
+  /* Auto-hide on scroll down */
+  #site-header.header-hidden {
+    transform: translateY(-100%);
+  }
+
   /* Stack icons and animate the active one in */
   .theme-toggle [data-icon] {
     position: absolute;

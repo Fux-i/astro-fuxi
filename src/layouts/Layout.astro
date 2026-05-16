@@ -19,7 +19,7 @@ let { title, desc, image = undefined } = Astro.props;
     <BaseHead title={title} desc={desc} image={image} />
     <ThemeScript />
   </head>
-  <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+  <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 pt-16">
     <Header />
     <slot />
     <Footer />
