@@ -1,15 +1,28 @@
+---
+import BaseHead from "@/components/common/BaseHead.astro";
+import Header from "@/components/common/Header.astro";
+import ThemeScript from "@/components/common/ThemeScript.astro";
+import Footer from "@/components/common/Footer.astro";
+
+interface Props {
+  title: string;
+  desc: string;
+  image?: ImageMetadata;
+}
+
+let { title, desc, image = undefined } = Astro.props;
+---
+
 <!doctype html>
-<html lang="en">
+<html lang={Astro.currentLocale ?? "en"}>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <BaseHead title={title} desc={desc} image={image} />
+    <ThemeScript />
   </head>
-  <body>
+  <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 pt-16">
+    <Header />
     <slot />
+    <Footer />
   </body>
 </html>
 

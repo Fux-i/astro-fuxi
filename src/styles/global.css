@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "./article.css";
+@import "katex/dist/katex.min.css";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@source inline("max-w-{3xl,4xl,5xl,6xl,7xl}");
+
+* {
+  box-sizing: border-box;
+}

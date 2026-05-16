@@ -1,0 +1,15 @@
+---
+import CommonPage from "@/layouts/CommonPage.astro";
+import { getT } from "@/i18n/ui";
+import { getSingle } from "@/content";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "zh" } }];
+}
+const { lang, t } = getT(Astro.currentLocale);
+const doc = getSingle("about", lang);
+---
+
+<CommonPage title={t("nav.about") + t("site.title_suffix")} desc="">
+  {doc ? <doc.Content /> : <p>Not found.</p>}
+</CommonPage>

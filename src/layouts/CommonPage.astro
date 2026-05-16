@@ -1,0 +1,24 @@
+---
+import { SITE } from "@/config";
+import Layout from "./Layout.astro";
+const page_width = "max-w-" + SITE.page_width;
+
+interface Props {
+  title: string;
+  desc: string;
+  image?: ImageMetadata;
+}
+
+let { title, desc, image = undefined } = Astro.props;
+---
+
+<Layout title={title} desc={desc} image={image}>
+  <article
+    class:list={[
+      page_width,
+      "bg-white dark:bg-gray-900 mx-auto px-8 py-4 article",
+    ]}
+  >
+    <slot />
+  </article>
+</Layout>

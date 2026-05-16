@@ -1,0 +1,32 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getCollection, type CollectionItem } from "@/content";
+import type { Lang } from "@/i18n/ui";
+import { SITE } from "@/config";
+
+export function getStaticPaths() {
+  const langs: Lang[] = ["en", "zh"];
+  return langs.flatMap((lang) =>
+    getCollection("posts", lang).map((p) => ({
+      params: { lang, slug: p.slug },
+      props: { item: p },
+    })),
+  );
+}
+
+const { item } = Astro.props as { item: CollectionItem };
+const { Content, frontmatter } = item;
+const page_width = "max-w-" + SITE.page_width;
+---
+
+<Layout title={frontmatter.title ?? item.slug} desc={frontmatter.desc ?? ""}>
+  <article
+    class:list={[
+      page_width,
+      "article bg-white dark:bg-gray-800 mx-auto my-4 px-8 py-4 shadow",
+    ]}
+  >
+    <h1>{frontmatter.title ?? item.slug}</h1>
+    <Content />
+  </article>
+</Layout>

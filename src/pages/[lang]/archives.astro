@@ -1,0 +1,13 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getT } from "@/i18n/ui";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "zh" } }];
+}
+const { t } = getT(Astro.currentLocale);
+---
+
+<Layout title={t("nav.archives") + t("site.title_suffix")} desc="">
+  <h1>{t("nav.archives")}</h1>
+</Layout>

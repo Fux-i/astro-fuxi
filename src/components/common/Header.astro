@@ -1,0 +1,338 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import IconX from "@/assets/icons/IconX.svg";
+import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
+import IconMoon from "@/assets/icons/IconMoon.svg";
+import IconSearch from "@/assets/icons/IconSearch.svg";
+import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
+import IconComputer from "@/assets/icons/IconComputer.svg";
+import { SITE } from "@/config";
+import { getT } from "@/i18n/ui";
+import LangSwitch from "@/components/common/LangSwitch.astro";
+
+const { lang, t } = getT(Astro.currentLocale);
+
+const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) => {
+  const full = getRelativeLocaleUrl(lang, href).replace(/\/$/, "") || "/";
+  return pathname === full || pathname.startsWith(full + "/");
+};
+
+const page_width = "max-w-" + SITE.header_width;
+const navs = SITE.navs;
+const socials = SITE.socials;
+
+const linkBase =
+  "px-3 py-1.5 rounded-md text-base hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors";
+const linkActive = "underline-offset-2 bg-gray-100 dark:bg-gray-800";
+const iconBtn =
+  "relative inline-flex items-center justify-center size-8 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer";
+---
+
+<header
+  id="site-header"
+  class="fixed top-0 left-0 right-0 px-4 bg-white dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700 z-50 transition-transform duration-300 will-change-transform"
+>
+  <container
+    id="header-container"
+    class:list={[page_width, "relative flex mx-auto h-16 items-center"]}
+  >
+    <a
+      href={getRelativeLocaleUrl(lang, "")}
+      id="title"
+      class="flex items-center gap-2 px-2 py-1 rounded-md"
+    >
+      <img src={SITE.favicon} alt={t("site.title")} class="size-7" />
+      <span class="text-lg font-semibold">{t("site.title")}</span>
+    </a>
+
+    <placeholder class="flex-1"></placeholder>
+
+    <nav class="flex items-center gap-1">
+      {
+        navs.map((n) => (
+          <a
+            href={getRelativeLocaleUrl(lang, n.href)}
+            class:list={[linkBase, isActive(n.href) && linkActive]}
+          >
+            {t(n.key)}
+          </a>
+        ))
+      }
+    </nav>
+
+    <placeholder class="flex-1"></placeholder>
+
+    <tool-bar class="flex items-center gap-1">
+      <button type="button" title={t("btn.search")} class={iconBtn}>
+        <IconSearch class="size-5" />
+      </button>
+      <button
+        type="button"
+        title={t("btn.theme")}
+        class:list={[iconBtn, "theme-toggle"]}
+        data-pref="system"
+      >
+        <IconSunHigh class="size-5" data-icon="light" />
+        <IconMoon class="size-5" data-icon="dark" />
+        <IconComputer class="size-5" data-icon="system" />
+      </button>
+      <LangSwitch isMobile={false} />
+    </tool-bar>
+
+    <contacts class="flex items-center gap-1">
+      <divider class="h-4 ml-1 bg-gray-400 dark:bg-gray-600 w-px"></divider>
+      {
+        socials.map((s) => (
+          <a href={s.href} title={t(s.key)} class={iconBtn} target="_blank">
+            <s.icon class="size-5" />
+          </a>
+        ))
+      }
+    </contacts>
+
+    <toggle-btn
+      class="relative ml-auto hidden items-center justify-center size-8"
+    >
+      <button
+        type="button"
+        title={t("btn.menu")}
+        id="menu-btn"
+        class:list={[iconBtn, "absolute inset-0"]}
+      >
+        <IconMenuDeep class="size-7" />
+      </button>
+      <button
+        type="button"
+        title={t("btn.x")}
+        id="x-btn"
+        class:list={[iconBtn, "absolute inset-0"]}
+      >
+        <IconX class="size-7" />
+      </button>
+    </toggle-btn>
+
+    <menu
+      class="absolute right-0 top-12 bg-white dark:bg-gray-900 rounded-2xl border-gray-500 border overflow-hidden p-2 flex-col"
+    >
+      <nav class="flex flex-col items-center w-40 mb-1">
+        {
+          navs.map((n) => (
+            <a
+              href={getRelativeLocaleUrl(lang, n.href)}
+              class="text-center w-full py-3 border-b border-gray-300 hover:underline"
+            >
+              {t(n.key)}
+            </a>
+          ))
+        }
+      </nav>
+      <tool-bar class="flex justify-center items-center gap-1">
+        <button
+          type="button"
+          title={t("btn.search")}
+          class:list={[iconBtn, "size-10"]}
+        >
+          <IconSearch class="size-7" />
+        </button>
+        <button
+          type="button"
+          title={t("btn.theme")}
+          class:list={[iconBtn, "theme-toggle size-10"]}
+          data-pref="system"
+        >
+          <IconSunHigh class="size-7" data-icon="light" />
+          <IconMoon class="size-7" data-icon="dark" />
+          <IconComputer class="size-7" data-icon="system" />
+        </button>
+        <LangSwitch isMobile={true} />
+      </tool-bar>
+      <contacts class="flex justify-center items-center gap-1">
+        {
+          socials.map((s) => (
+            <a
+              href={s.href}
+              title={t(s.key)}
+              class:list={[iconBtn, "size-10"]}
+              target="_blank"
+            >
+              <s.icon class="size-7" />
+            </a>
+          ))
+        }
+      </contacts>
+    </menu>
+  </container>
+</header>
+
+<script>
+  type Theme = "system" | "light" | "dark";
+  const KEY = "theme";
+  const order: Theme[] = ["system", "light", "dark"];
+
+  const mql = window.matchMedia("(prefers-color-scheme: dark)");
+
+  const getTheme = (): Theme =>
+    (localStorage.getItem(KEY) as Theme) || "system";
+
+  const apply = (t: Theme) => {
+    const isDark = t === "dark" || (t === "system" && mql.matches);
+    const root = document.documentElement;
+    root.dataset.theme = isDark ? "dark" : "light";
+    btns.forEach((b) => ((b as HTMLElement).dataset.pref = t));
+  };
+
+  const btns = document.querySelectorAll(".theme-toggle");
+  btns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const next = order[(order.indexOf(getTheme()) + 1) % order.length];
+      if (next === "system") localStorage.removeItem(KEY);
+      else localStorage.setItem(KEY, next);
+      apply(next);
+    });
+  });
+  mql.addEventListener("change", () => {
+    if (getTheme() === "system") apply("system");
+  });
+
+  apply(getTheme());
+
+  // responsive
+  const container = document.getElementById("header-container")!;
+  const menuBtn = document.getElementById("menu-btn")!;
+  const xBtn = document.getElementById("x-btn")!;
+  const menu = container.querySelector("menu")!;
+  let expandWidth = 60;
+  let collapsed = false;
+
+  for (const child of container.children) {
+    if (
+      child === menu ||
+      child.tagName === "PLACEHOLDER" ||
+      child.tagName === "TOGGLE-BTN"
+    )
+      continue;
+    expandWidth += (child as HTMLElement).offsetWidth;
+  }
+
+  function update(containerW: number) {
+    if (!collapsed) {
+      if (containerW <= expandWidth) {
+        collapsed = true;
+        container.classList.add("collapsed");
+      }
+    } else if (containerW > expandWidth) {
+      collapsed = false;
+      container.classList.remove("collapsed");
+      container.classList.remove("open");
+    }
+  }
+
+  new ResizeObserver((entries) => {
+    update(entries[0].contentRect.width);
+  }).observe(container);
+
+  const toggleMenu = () => container.classList.toggle("open");
+  menuBtn.addEventListener("click", toggleMenu);
+  xBtn.addEventListener("click", toggleMenu);
+
+  // Hide on scroll down, show on scroll up
+  const header = document.getElementById("site-header")!;
+  const THRESHOLD = 10;
+  let lastY = window.scrollY;
+  let ticking = false;
+
+  const onScroll = () => {
+    const y = window.scrollY;
+    const dy = y - lastY;
+    if (Math.abs(dy) < THRESHOLD || container.classList.contains("open")) {
+      ticking = false;
+      return;
+    }
+    if (dy > 0 && y > header.offsetHeight)
+      header.classList.add("header-hidden");
+    else if (dy < 0) header.classList.remove("header-hidden");
+    lastY = y;
+    ticking = false;
+  };
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!ticking) {
+        requestAnimationFrame(onScroll);
+        ticking = true;
+      }
+    },
+    { passive: true },
+  );
+</script>
+
+<style>
+  /* Auto-hide on scroll down */
+  #site-header.header-hidden {
+    transform: translateY(-100%);
+  }
+
+  /* Stack icons and animate the active one in */
+  .theme-toggle [data-icon] {
+    position: absolute;
+    scale: 0;
+    rotate: -90deg;
+    transition: all 0.3s ease;
+  }
+  .theme-toggle[data-pref="light"] [data-icon="light"],
+  .theme-toggle[data-pref="dark"] [data-icon="dark"],
+  .theme-toggle[data-pref="system"] [data-icon="system"] {
+    scale: 1;
+    rotate: 0deg;
+  }
+
+  /* Responsive collapse */
+  toggle-btn,
+  menu {
+    display: none;
+  }
+  #menu-btn,
+  #x-btn {
+    position: absolute;
+    inset: 0;
+  }
+  #menu-btn {
+    scale: 1;
+    /* at scale:1 → next move is shrink → ease-in */
+    transition: scale 0.15s ease-in;
+  }
+  #x-btn {
+    scale: 0;
+    pointer-events: none;
+    /* at scale:0 → next move is grow → bounce */
+    transition: scale 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  #header-container.collapsed {
+    & > nav,
+    & > tool-bar,
+    & > contacts,
+    & > placeholder {
+      display: none;
+    }
+    & > toggle-btn {
+      display: inline-flex;
+    }
+    &.open > menu {
+      display: flex;
+    }
+    &.open #menu-btn {
+      scale: 0;
+      pointer-events: none;
+      /* now at scale:0 → next move is grow → bounce */
+      transition: scale 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    &.open #x-btn {
+      scale: 1;
+      pointer-events: auto;
+      /* now at scale:1 → next move is shrink → ease-in */
+      transition: scale 0.15s ease-in;
+    }
+  }
+</style>

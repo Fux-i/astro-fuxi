@@ -1,0 +1,14 @@
+---
+import Welcome from "@/components/Welcome.astro";
+import Layout from "@/layouts/Layout.astro";
+import { getT } from "@/i18n/ui";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "zh" } }];
+}
+const { t } = getT(Astro.currentLocale);
+---
+
+<Layout title={t("site.title")} desc="">
+  <Welcome />
+</Layout>

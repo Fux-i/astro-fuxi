@@ -1,0 +1,16 @@
+---
+// Inline theme script: must run before paint to avoid FOUC.
+// Reusable across layouts.
+---
+
+<script is:inline>
+  (() => {
+    const stored = localStorage.getItem("theme");
+    const isDark =
+      stored === "dark" ||
+      (stored !== "light" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches);
+    const root = document.documentElement;
+    root.dataset.theme = isDark ? "dark" : "light";
+  })();
+</script>
