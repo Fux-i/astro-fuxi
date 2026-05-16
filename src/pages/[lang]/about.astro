@@ -1,5 +1,5 @@
 ---
-import Layout from "@/layouts/Layout.astro";
+import CommonPage from "@/layouts/CommonPage.astro";
 import { getT } from "@/i18n/ui";
 import { getSingle } from "@/content";
 
@@ -10,6 +10,6 @@ const { lang, t } = getT(Astro.currentLocale);
 const doc = getSingle("about", lang);
 ---
 
-<Layout title={t("nav.about") + t("site.title_suffix")} desc="">
+<CommonPage title={t("nav.about") + t("site.title_suffix")} desc="">
   {doc ? <doc.Content /> : <p>Not found.</p>}
-</Layout>
+</CommonPage>

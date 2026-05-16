@@ -5,7 +5,8 @@ import IconGitHub from "@/assets/icons/IconGitHub.svg";
 export const SITE = {
   author: "Fuxi",
   favicon: "/favicon.png",
-  page_width: "5xl",  // 3xl, 4xl(56rem), 5xl(64rem), 6xl(72rem), or 7xl
+  header_width: "5xl",  // 3xl, 4xl(56rem), 5xl(64rem), 6xl(72rem), or 7xl
+  page_width: "5xl",
   navs: [
     { key: "nav.moments", href: "moments" },
     { key: "nav.posts", href: "posts" },
