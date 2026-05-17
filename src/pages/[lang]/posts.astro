@@ -12,16 +12,20 @@ const posts = getCollection("posts", lang);
 ---
 
 <Layout title={t("nav.posts") + t("site.title_suffix")} desc="">
-  <ul>
-    {
-      posts.map((p) => (
-        <li>
-          <a href={`/${lang}/posts/${p.slug}`}>
-            {p.frontmatter.title ?? p.slug}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-  {posts.map((p) => <Article item={p} exclusive={false} />)}
+  <container class="w-full relative">
+    <main class:list={["main w-full px-4"]}>
+      <ul>
+        {
+          posts.map((p) => (
+            <li>
+              <a href={`/${lang}/posts/${p.slug}`}>
+                {p.frontmatter.title ?? p.slug}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      {posts.map((p) => <Article item={p} exclusive={false} />)}
+    </main>
+  </container>
 </Layout>
