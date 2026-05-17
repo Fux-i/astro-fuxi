@@ -19,5 +19,5 @@ const { frontmatter } = item;
 ---
 
 <Layout title={frontmatter.title ?? item.slug} desc={frontmatter.desc ?? ""}>
-  <Article item={item} />
+  <Article item={item} exclusive={true} />
 </Layout>

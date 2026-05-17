@@ -27,6 +27,8 @@ export const ui = {
     'social.mail': 'Send an email to Fuxi',
     'social.zhihu': 'Fuxi on Zhihu',
     'social.github': 'Fuxi on GitHub',
+    'article.expand': 'Expand',
+    'article.collapse': 'Collapse',
   },
   zh: {
     'site.title': '伏羲的博客',
@@ -45,6 +47,8 @@ export const ui = {
     'social.mail': '给伏羲发邮件',
     'social.zhihu': '知乎',
     'social.github': 'GitHub',
+    'article.expand': '展开',
+    'article.collapse': '收起',
   },
 } as const satisfies Record<Lang, Record<string, string>>;
 

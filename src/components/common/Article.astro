@@ -1,23 +1,79 @@
 ---
 import { type CollectionItem } from "@/content";
 import { SITE } from "@/config";
+import { getT } from "@/i18n/ui";
 
 interface Props {
   item: CollectionItem;
+  exclusive: boolean;
 }
 
-const { item } = Astro.props;
+const { item, exclusive } = Astro.props;
 const { Content, frontmatter } = item;
+const { t } = getT(Astro.currentLocale);
 
 const page_width = "max-w-" + SITE.page_width;
 ---
 
-<article
+<div
   class:list={[
     page_width,
-    "article bg-white dark:bg-gray-800 mx-auto my-4 px-8 py-4 shadow",
+    "article-wrapper relative mx-auto my-4 shadow",
+    !exclusive && "collapsible",
   ]}
 >
-  <h1>{frontmatter.title ?? item.slug}</h1>
-  <Content />
-</article>
+  <article
+    class:list={[
+      "article bg-(--article-bg) px-8 py-4",
+      !exclusive &&
+        "max-h-48 overflow-hidden transition-[max-height] duration-300",
+    ]}
+  >
+    <a href={item.slug} class:list={exclusive ? "hidden" : ""}
+      ><b>{frontmatter.title ?? item.slug}</b></a
+    >
+    <h1 class:list={exclusive ? "" : "hidden"}>
+      {frontmatter.title ?? item.slug}
+    </h1>
+    <Content />
+  </article>
+  {
+    !exclusive && (
+      <div class="fade-mask absolute inset-x-0 bottom-0 h-20 cursor-pointer">
+        <p class="text-blue-500 text-center w-full absolute bottom-2">
+          {t("article.expand")}
+        </p>
+      </div>
+    )
+  }
+
+  <style>
+    .fade-mask {
+      background: linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--article-bg) 50%, transparent),
+        var(--article-bg)
+      );
+    }
+    .collapsible.expanded > article {
+      max-height: 9999px;
+    }
+
+    .expanded .fade-mask {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+
+  <script>
+    document
+      .querySelectorAll<HTMLButtonElement>(".fade-mask")
+      .forEach((mask) => {
+        mask.addEventListener("click", () => {
+          const wrapper = mask.closest(".article-wrapper");
+          if (!wrapper) return;
+          wrapper.classList.add("expanded");
+        });
+      });
+  </script>
+</div>

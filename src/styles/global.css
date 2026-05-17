@@ -12,3 +12,10 @@
 html {
   scroll-behavior: smooth;
 }
+
+:root {
+  --article-bg: white;
+  &[data-theme="dark"] {
+    --article-bg: var(--color-gray-800);
+  }
+}
