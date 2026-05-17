@@ -128,4 +128,19 @@
     font-size: 0.85em;
     font-family: inherit;
   }
+
+  /* footnotes: replace generated <h2>Footnotes</h2> with an <hr>-like rule,
+     and render the list as small dim text */
+  & :where(section[data-footnotes]):not(.no-article *) {
+    margin-block-start: 3em;
+    padding-block-start: 1.5em;
+    border-top: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+    font-size: 0.85em;
+    line-height: 0.5em;
+    color: color-mix(in srgb, currentColor 60%, transparent);
+
+    & > h2 {
+      display: none;
+    }
+  }
 }
