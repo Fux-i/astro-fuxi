@@ -29,10 +29,10 @@ const page_width = "max-w-" + SITE.page_width;
         "max-h-48 overflow-hidden transition-[max-height] duration-300",
     ]}
   >
-    <a href={item.slug} class:list={exclusive ? "hidden" : ""}
+    <a href={item.slug} class:list={exclusive ? "hidden" : "title-a text-xl"}
       ><b>{frontmatter.title ?? item.slug}</b></a
     >
-    <h1 class:list={exclusive ? "" : "hidden"}>
+    <h1 class:list={exclusive ? "" : "title-a hidden"}>
       {frontmatter.title ?? item.slug}
     </h1>
     <Content />
@@ -62,6 +62,15 @@ const page_width = "max-w-" + SITE.page_width;
     .expanded .fade-mask {
       opacity: 0;
       pointer-events: none;
+    }
+
+    .expanded {
+      a.title-a {
+        display: none;
+      }
+      h1.title-a {
+        display: block;
+      }
     }
   </style>
 
