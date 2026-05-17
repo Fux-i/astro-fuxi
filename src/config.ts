@@ -8,8 +8,8 @@ export const SITE = {
   header_width: "5xl",  // 3xl, 4xl(56rem), 5xl(64rem), 6xl(72rem), or 7xl
   page_width: "5xl",
   navs: [
-    { key: "nav.moments", href: "moments" },
     { key: "nav.posts", href: "posts" },
+    { key: "nav.moments", href: "moments" },
     // { key: "nav.archives", href: "archives" },
     { key: "nav.friends", href: "friends" },
     { key: "nav.about", href: "about" },
