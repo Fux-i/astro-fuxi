@@ -28,12 +28,18 @@ const page_width = "max-w-" + SITE.page_width;
       !exclusive && "h-48 overflow-hidden transition-[height] duration-300",
     ]}
   >
-    <a href={item.slug} class:list={exclusive ? "hidden" : "title-a text-xl"}
-      ><b>{frontmatter.title ?? item.slug}</b></a
-    >
-    <h1 class:list={exclusive ? "" : "title-a hidden"}>
-      {frontmatter.title ?? item.slug}
-    </h1>
+  {
+    exclusive ? 
+    (
+      <h1 class:list={}>
+        {frontmatter.title ?? item.slug}
+      </h1>
+    ) : (
+      <a href={item.slug} class:list={"title-a text-xl transition-[font-size] duration-300"}
+        ><b>{frontmatter.title ?? item.slug}</b></a
+      >
+    )
+  }
     <Content />
   </article>
   {
