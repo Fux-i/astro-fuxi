@@ -51,19 +51,17 @@ const page_width = "max-w-" + SITE.page_width;
     .fade-mask {
       background: linear-gradient(
         to bottom,
-        color-mix(in srgb, var(--article-bg) 50%, transparent),
+        color-mix(in srgb, var(--article-bg) 0%, transparent),
         var(--article-bg)
       );
     }
     .collapsible.expanded > article {
       max-height: 9999px;
     }
-
     .expanded .fade-mask {
       opacity: 0;
       pointer-events: none;
     }
-
     .expanded {
       a.title-a {
         display: none;
