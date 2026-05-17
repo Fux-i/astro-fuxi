@@ -1,5 +1,6 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import Article from "@/components/common/Article.astro";
 import { getT } from "@/i18n/ui";
 import { getCollection } from "@/content";
 
@@ -11,7 +12,6 @@ const posts = getCollection("posts", lang);
 ---
 
 <Layout title={t("nav.posts") + t("site.title_suffix")} desc="">
-  <h1>{t("nav.posts")}</h1>
   <ul>
     {
       posts.map((p) => (
@@ -23,4 +23,5 @@ const posts = getCollection("posts", lang);
       ))
     }
   </ul>
+  {posts.map((p) => <Article item={p} exclusive={false} />)}
 </Layout>

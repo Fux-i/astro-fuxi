@@ -1,0 +1,23 @@
+---
+import { type CollectionItem } from "@/content";
+import { SITE } from "@/config";
+
+interface Props {
+  item: CollectionItem;
+}
+
+const { item } = Astro.props;
+const { Content, frontmatter } = item;
+
+const page_width = "max-w-" + SITE.page_width;
+---
+
+<article
+  class:list={[
+    page_width,
+    "article bg-white dark:bg-gray-800 mx-auto my-4 px-8 py-4 shadow",
+  ]}
+>
+  <h1>{frontmatter.title ?? item.slug}</h1>
+  <Content />
+</article>
