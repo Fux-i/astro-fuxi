@@ -25,7 +25,7 @@ const page_width = "max-w-" + SITE.page_width;
   <article
     class:list={[
       "article bg-(--article-bg) px-8 py-4",
-      !exclusive && "h-48 overflow-hidden transition-[height] duration-1000",
+      !exclusive && "h-48 overflow-hidden transition-[height] duration-300",
     ]}
   >
     <a href={item.slug} class:list={exclusive ? "hidden" : "title-a text-xl"}
@@ -38,48 +38,60 @@ const page_width = "max-w-" + SITE.page_width;
   </article>
   {
     !exclusive && (
-      <div class="fade-mask absolute inset-x-0 bottom-0 h-20 cursor-pointer">
+      <sticky-rail class="sticky-rail pointer-events-none absolute inset-y-0 -right-6 w-0 opacity-0 transition-opacity duration-300">
+        <button
+          type="button"
+          title={t('article.collapse')}
+          class="collapse-btn pointer-events-auto sticky top-20 grid size-10 cursor-pointer place-items-center rounded-full bg-(--article-bg) shadow hover:brightness-90"
+        >
+          ⏶
+        </button>
+      </sticky-rail>
+      <div class="fade-mask absolute inset-x-0 bottom-0 h-20 cursor-pointer transition-opacity duration-300">
         <p class="text-blue-500 text-center w-full absolute bottom-2">
           {t("article.expand")}
         </p>
       </div>
     )
   }
-
-  <style>
-    .fade-mask {
-      background: linear-gradient(
-        to bottom,
-        color-mix(in srgb, var(--article-bg) 0%, transparent),
-        var(--article-bg)
-      );
-    }
-    .collapsible.expanded > article {
-      height: calc-size(auto, size);
-    }
-    .expanded .fade-mask {
-      opacity: 0;
-      pointer-events: none;
-    }
-    .expanded {
-      a.title-a {
-        display: none;
-      }
-      h1.title-a {
-        display: block;
-      }
-    }
-  </style>
-
-  <script>
-    document
-      .querySelectorAll<HTMLButtonElement>(".fade-mask")
-      .forEach((mask) => {
-        mask.addEventListener("click", () => {
-          const wrapper = mask.closest(".article-wrapper");
-          if (!wrapper) return;
-          wrapper.classList.add("expanded");
-        });
-      });
-  </script>
 </div>
+
+<style>
+  .fade-mask {
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--article-bg) 0%, transparent),
+      var(--article-bg)
+    );
+  }
+  .collapsible.expanded > article {
+    height: calc-size(auto, size);
+  }
+  .expanded .fade-mask {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .expanded .sticky-rail {
+    opacity: 1;
+  }
+  .expanded {
+    a.title-a {
+      font-size: 2rem;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".fade-mask").forEach((mask) => {
+    mask.addEventListener("click", () => {
+      mask.closest(".article-wrapper")?.classList.add("expanded");
+    });
+  });
+  document
+    .querySelectorAll<HTMLButtonElement>(".collapse-btn")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        btn.closest(".article-wrapper")?.classList.remove("expanded");
+      });
+    });
+</script>
