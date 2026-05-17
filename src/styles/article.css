@@ -116,6 +116,10 @@
     background: color-mix(in srgb, currentColor 5%, transparent);
   }
 
+  & :where(tr):not(.no-article *):hover {
+    background: color-mix(in srgb, currentColor 5%, transparent);
+  }
+
   & :where(hr):not(.no-article *) {
     margin-block: 2em;
     border: 0;
