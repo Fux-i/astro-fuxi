@@ -37,12 +37,18 @@ export const CONTENT = {
 /* runtime */
 
 export type PageKey = keyof typeof CONTENT;
+export type MarkdownHeading = {
+  depth: number;
+  slug: string;
+  text: string;
+};
+
 type MdModule = {
   frontmatter: Record<string, any>;
   Content: any;
   file?: string;
   url?: string;
-  getHeadings?: () => any[];
+  getHeadings?: () => MarkdownHeading[];
 };
 
 // import.meta.glob requires literal pattern; load every md under src/data
@@ -93,6 +99,7 @@ export type CollectionItem = {
   slug: string;
   frontmatter: Record<string, any>;
   Content: any;
+  headings: MarkdownHeading[];
 };
 
 export function getCollection(
@@ -111,5 +118,6 @@ export function getCollection(
       slug: e.mod.frontmatter?.slug ?? fallbackSlug(e.path),
       frontmatter: e.mod.frontmatter ?? {},
       Content: e.mod.Content,
+      headings: e.mod.getHeadings?.() ?? [],
     }));
 }

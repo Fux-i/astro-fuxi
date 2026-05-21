@@ -152,4 +152,8 @@
   & :where([id^="user-content-fn"]):not(.no-article *) {
     scroll-margin-top: 5rem;
   }
+
+  & :where(h1, h2, h3, h4, h5, h6)[id]:not(.no-article *) {
+    scroll-margin-top: 5rem;
+  }
 }

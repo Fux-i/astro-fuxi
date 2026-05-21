@@ -29,6 +29,7 @@ export const ui = {
     'social.github': 'Fuxi on GitHub',
     'article.expand': 'Expand',
     'article.collapse': 'Collapse',
+    'btn.outline': 'Outline',
   },
   zh: {
     'site.title': '伏羲的博客',
@@ -49,6 +50,7 @@ export const ui = {
     'social.github': 'GitHub',
     'article.expand': '展开',
     'article.collapse': '收起',
+    'btn.outline': '大纲',
   },
 } as const satisfies Record<Lang, Record<string, string>>;
 

@@ -1,0 +1,124 @@
+---
+import IconOutline from "@/assets/icons/iconOutline.svg";
+import { getT } from "@/i18n/ui";
+import type { MarkdownHeading } from "@/content";
+
+const { t } = getT(Astro.currentLocale);
+interface Props {
+  toc: MarkdownHeading[];
+}
+
+const { toc } = Astro.props;
+const items = (toc ?? []).filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+<outline-box class="outline-box relative block shrink-0 open">
+  <button
+    type="button"
+    title={t("btn.outline")}
+    class="outline-toggle grid place-items-center size-10 rounded-full bg-(--article-bg) shadow cursor-pointer hover:brightness-90"
+  >
+    <IconOutline class="size-4" />
+  </button>
+
+  {
+    items.length > 0 && (
+      <nav class="outline-nav absolute top-12 hidden p-3">
+        <ol class="outline-list relative space-y-1.5 text-sm">
+          {items.map((h) => (
+            <li
+              class="outline-item relative"
+              data-slug={h.slug}
+              style={`padding-inline-start:calc(${h.depth - 2} * 1rem + 1.25rem)`}
+            >
+              <a
+                href={`#${h.slug}`}
+                class="outline-link block truncate opacity-70 hover:opacity-100"
+              >
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
+  }
+</outline-box>
+
+<style>
+  .outline-list::before {
+    content: "";
+    position: absolute;
+    left: 0.4rem;
+    top: 0.5em;
+    bottom: 0.5em;
+    border-left: 1px solid currentColor;
+    opacity: 0.2;
+  }
+  .outline-item::before {
+    content: "";
+    position: absolute;
+    left: calc(0.4rem - 0.2rem);
+    top: 0.7em;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 9999px;
+    background: currentColor;
+    opacity: 0.35;
+  }
+  .outline-item.active::before {
+    background: var(--accent, #2563eb);
+    opacity: 1;
+  }
+  .outline-item.active > .outline-link {
+    color: var(--accent, #2563eb);
+    font-weight: 600;
+    opacity: 1;
+  }
+  .outline-box.open .outline-nav {
+    display: block;
+  }
+</style>
+
+<script>
+  document
+    .querySelectorAll<HTMLButtonElement>(".outline-toggle")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        btn.closest(".outline-box")?.classList.toggle("open");
+      });
+    });
+
+  document.querySelectorAll<HTMLElement>(".outline-box").forEach((box) => {
+    const article = box.closest(".article-wrapper")?.querySelector(".article");
+    if (!article) return;
+    const headings = article.querySelectorAll<HTMLElement>("h2[id], h3[id]");
+    if (!headings.length) return;
+
+    const update = () => {
+      const threshold = window.innerHeight * 0.25;
+      let cur: HTMLElement | null = null;
+      for (const h of headings) {
+        if (h.getBoundingClientRect().top <= threshold) cur = h;
+        else break;
+      }
+      box.querySelector(".outline-item.active")?.classList.remove("active");
+      if (cur) {
+        box
+          .querySelector(`.outline-item[data-slug="${cur.id}"]`)
+          ?.classList.add("active");
+      }
+    };
+
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        update();
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    update();
+  });
+</script>
