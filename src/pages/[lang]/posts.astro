@@ -13,7 +13,7 @@ const posts = getCollection("posts", lang);
 
 <Layout title={t("nav.posts") + t("site.title_suffix")} desc="">
   <container class="w-full relative">
-    <main class:list={["main w-full px-4"]}>
+    <main class:list={["main w-full px-4 overflow-x-clip"]}>
       <ul>
         {
           posts.map((p) => (
