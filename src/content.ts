@@ -34,9 +34,20 @@ export const CONTENT = {
   },
 } as const satisfies Record<string, ContentEntry>;
 
+export type PageKey = keyof typeof CONTENT;
+
+type FrontmatterAliases = Partial<Record<PageKey, Record<string, string>>>;
+
+export const FRONTMATTER_ALIASES: FrontmatterAliases = {
+  posts: {
+    "zhihu-title": "title",
+    "zhihu-updated-at": "updated-at",
+    "zhihu-created-at": "created-at",
+  },
+};
+
 /* runtime */
 
-export type PageKey = keyof typeof CONTENT;
 export type MarkdownHeading = {
   depth: number;
   slug: string;
@@ -87,12 +98,34 @@ function fallbackSlug(path: string): string {
   return dir ? `${dir}/${stem}` : stem;
 }
 
+function normalizeFrontmatter(
+  pageKey: PageKey,
+  frontmatter: Record<string, any> = {},
+): Record<string, any> {
+  const aliases = FRONTMATTER_ALIASES[pageKey];
+  if (!aliases) return frontmatter;
+
+  const normalized = { ...frontmatter };
+  for (const [from, to] of Object.entries(aliases)) {
+    if (normalized[to] === undefined && normalized[from] !== undefined) {
+      normalized[to] = normalized[from];
+    }
+  }
+
+  return normalized;
+}
+
 export function getSingle(pageKey: PageKey, lang: Lang): MdModule | null {
   const entry = CONTENT[pageKey];
   const src = resolveSourceString(entry, lang);
   if (!src) return null;
   const hit = entries.find((e) => e.path === src);
-  return hit?.mod ?? null;
+  if (!hit) return null;
+
+  return {
+    ...hit.mod,
+    frontmatter: normalizeFrontmatter(pageKey, hit.mod.frontmatter),
+  };
 }
 
 export type CollectionItem = {
@@ -114,10 +147,14 @@ export function getCollection(
   return entries
     .filter((e) => pattern.test(e.path))
     .filter((e) => e.mod.frontmatter?.draft !== true)
-    .map((e) => ({
-      slug: e.mod.frontmatter?.slug ?? fallbackSlug(e.path),
-      frontmatter: e.mod.frontmatter ?? {},
-      Content: e.mod.Content,
-      headings: e.mod.getHeadings?.() ?? [],
-    }));
+    .map((e) => {
+      const frontmatter = normalizeFrontmatter(pageKey, e.mod.frontmatter);
+
+      return {
+        slug: frontmatter.slug ?? fallbackSlug(e.path),
+        frontmatter,
+        Content: e.mod.Content,
+        headings: e.mod.getHeadings?.() ?? [],
+      };
+    });
 }
