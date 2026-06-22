@@ -14,6 +14,11 @@ const { Content, frontmatter } = item;
 const { t } = getT(Astro.currentLocale);
 
 const page_width = "max-w-" + SITE.page_width;
+
+const publishedAt = frontmatter["published-at"];
+const updatedAt = frontmatter["updated-at"];
+const tags: string[] = frontmatter.tags ?? [];
+const hasMeta = publishedAt || updatedAt || tags.length > 0;
 ---
 
 <div
@@ -29,18 +34,49 @@ const page_width = "max-w-" + SITE.page_width;
       !exclusive && "h-48 overflow-hidden transition-[height] duration-300",
     ]}
   >
-  {
-    exclusive ? (
-      <h1 id={item.slug}>{frontmatter.title ?? item.slug}</h1>
-    ) : (
-      <a
-        href={item.slug}
-        class:list={"title-a text-xl transition-[font-size] duration-300"}
-      >
-        <b>{frontmatter.title ?? item.slug}</b>
-      </a>
-    )
-  }
+    {
+      exclusive ? (
+        <h1 id={item.slug}>{frontmatter.title ?? item.slug}</h1>
+      ) : (
+        <a
+          href={item.slug}
+          class:list={"title-a text-xl transition-[font-size] duration-300"}
+        >
+          <b>{frontmatter.title ?? item.slug}</b>
+        </a>
+      )
+    }
+    {
+      hasMeta && (
+        <post-meta class="my-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
+          {(publishedAt || updatedAt) && (
+            <span class="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
+              {publishedAt && (
+                <span>
+                  {t("article.published_at")}{" "}
+                  <time datetime={publishedAt}>{publishedAt}</time>
+                </span>
+              )}
+              {updatedAt && (
+                <span>
+                  {t("article.updated_at")}{" "}
+                  <time datetime={updatedAt}>{updatedAt}</time>
+                </span>
+              )}
+            </span>
+          )}
+          {tags.length > 0 && (
+            <tag-list class="flex flex-wrap items-center gap-2">
+              {tags.map((tag) => (
+                <post-tag class="border border-gray-200 px-2 py-0.5 text-xs text-gray-600 dark:border-gray-600 dark:text-gray-300">
+                  {tag}
+                </post-tag>
+              ))}
+            </tag-list>
+          )}
+        </post-meta>
+      )
+    }
     <Content />
   </article>
   <sticky-rail

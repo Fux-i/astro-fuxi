@@ -29,6 +29,8 @@ export const ui = {
     'social.github': 'Fuxi on GitHub',
     'article.expand': 'Expand',
     'article.collapse': 'Collapse',
+    'article.published_at': 'Published at',
+    'article.updated_at': 'Updated at',
     'btn.outline': 'Outline',
   },
   zh: {
@@ -50,6 +52,8 @@ export const ui = {
     'social.github': 'GitHub',
     'article.expand': '展开',
     'article.collapse': '收起',
+    'article.published_at': '发布于',
+    'article.updated_at': '编辑于',
     'btn.outline': '大纲',
   },
 } as const satisfies Record<Lang, Record<string, string>>;

@@ -42,7 +42,9 @@ export const FRONTMATTER_ALIASES: FrontmatterAliases = {
   posts: {
     "zhihu-title": "title",
     "zhihu-updated-at": "updated-at",
-    "zhihu-created-at": "created-at",
+    "zhihu-created-at": "published-at",
+    "zhihu-content-created": "published-at",
+    "content-created": "published-at",
   },
 };
 
