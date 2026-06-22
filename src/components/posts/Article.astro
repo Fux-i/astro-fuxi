@@ -43,11 +43,18 @@ const page_width = "max-w-" + SITE.page_width;
   }
     <Content />
   </article>
-  {
-    !exclusive && (
-      <sticky-rail class="sticky-rail pointer-events-none absolute inset-y-0 -right-4 w-0 opacity-0 transition-opacity duration-300">
-        <div class="sticky top-20 flex gap-2">
-          <Outline toc={item.headings} />
+  <sticky-rail
+    class:list={[
+      "sticky-rail absolute inset-y-0 -right-4 w-0 transition-opacity duration-300",
+      exclusive
+        ? "pointer-events-auto opacity-100"
+        : "pointer-events-none opacity-0",
+    ]}
+  >
+    <div class="sticky top-20 flex gap-2">
+      <Outline toc={item.headings} />
+      {
+        !exclusive && (
           <button
             type="button"
             title={t("article.collapse")}
@@ -55,8 +62,12 @@ const page_width = "max-w-" + SITE.page_width;
           >
             ⏶
           </button>
-        </div>
-      </sticky-rail>
+        )
+      }
+    </div>
+  </sticky-rail>
+  {
+    !exclusive && (
       <div class="fade-mask absolute inset-x-0 bottom-0 h-35 cursor-pointer transition-opacity duration-300">
         <p class="text-blue-500 text-center w-full absolute bottom-2">
           {t("article.expand")}
