@@ -30,7 +30,9 @@ function dotX(depth: number): number {
   return BASE_DOT_X + (depth - 2) * INDENT_STEP;
 }
 
-const headings = (toc ?? []).filter((h) => h.depth >= 2 && h.depth <= 6);
+const headings = (toc ?? []).filter(
+  (h) => h.depth >= 2 && h.depth <= 6 && h.text !== "Footnotes",
+);
 const items = headings.map((h, index) => {
   const next = headings[index + 1];
   const size = dotSize(h.depth);
