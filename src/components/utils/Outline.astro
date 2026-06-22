@@ -23,7 +23,7 @@ const items = (toc ?? []).filter((h) => h.depth === 2 || h.depth === 3);
 
   {
     items.length > 0 && (
-      <nav class="outline-nav absolute top-12 hidden p-3">
+      <nav class="outline-nav relative mt-2 hidden p-3">
         <ol class="outline-list relative space-y-1.5 text-sm">
           {items.map((h) => (
             <li
