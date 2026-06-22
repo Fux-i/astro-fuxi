@@ -199,38 +199,116 @@ const items = headings.map((h, index) => {
       });
     });
 
+  type HeadingEntry = {
+    top: number;
+    item: HTMLElement;
+  };
+
+  type OutlineEntry = {
+    article: HTMLElement;
+    headings: HTMLElement[];
+    entries: HeadingEntry[];
+    active: HTMLElement | null;
+  };
+
+  const outlines: OutlineEntry[] = [];
+
+  function refresh(entry: OutlineEntry) {
+    entry.entries = entry.headings
+      .map((heading) => ({
+        top: heading.getBoundingClientRect().top + window.scrollY,
+        item:
+          entry.article
+            .closest(".article-wrapper")
+            ?.querySelector<HTMLElement>(
+              `.outline-item[data-anchor="${CSS.escape(heading.id)}"]`,
+            ) ?? null,
+      }))
+      .filter((item): item is HeadingEntry => item.item !== null);
+  }
+
+  function setActive(entry: OutlineEntry, active: HTMLElement | null) {
+    if (entry.active === active) return;
+    entry.active?.classList.remove("active");
+    active?.classList.add("active");
+    entry.active = active;
+  }
+
+  function findCurrent(entries: HeadingEntry[], targetTop: number) {
+    let low = 0;
+    let high = entries.length - 1;
+    let current: HTMLElement | null = null;
+
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      if (entries[mid].top <= targetTop) {
+        current = entries[mid].item;
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+
+    return current;
+  }
+
+  function updateAll() {
+    const targetTop = window.scrollY + window.innerHeight * 0.25;
+    outlines.forEach((entry) => {
+      setActive(entry, findCurrent(entry.entries, targetTop));
+    });
+  }
+
+  let raf = 0;
+  function scheduleUpdate() {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      updateAll();
+    });
+  }
+
+  let refreshRaf = 0;
+  function scheduleRefresh() {
+    if (refreshRaf) return;
+    refreshRaf = requestAnimationFrame(() => {
+      refreshRaf = 0;
+      outlines.forEach(refresh);
+      updateAll();
+    });
+  }
+
   document.querySelectorAll<HTMLElement>(".outline-box").forEach((box) => {
     const article = box.closest(".article-wrapper")?.querySelector(".article");
-    if (!article) return;
-    const headings = article.querySelectorAll<HTMLElement>(
-      "h2[id], h3[id], h4[id], h5[id], h6[id]",
+    if (!(article instanceof HTMLElement)) return;
+
+    const headings = Array.from(
+      article.querySelectorAll<HTMLElement>(
+        "h2[id], h3[id], h4[id], h5[id], h6[id]",
+      ),
     );
     if (!headings.length) return;
 
-    const update = () => {
-      const threshold = window.innerHeight * 0.25;
-      let cur: HTMLElement | null = null;
-      for (const h of headings) {
-        if (h.getBoundingClientRect().top <= threshold) cur = h;
-        else break;
-      }
-      box.querySelector(".outline-item.active")?.classList.remove("active");
-      if (cur) {
-        box
-          .querySelector(`.outline-item[data-anchor="${CSS.escape(cur.id)}"]`)
-          ?.classList.add("active");
-      }
+    const entry: OutlineEntry = {
+      article,
+      headings,
+      entries: [],
+      active: null,
     };
-
-    let raf = 0;
-    const onScroll = () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        update();
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    update();
+    refresh(entry);
+    outlines.push(entry);
   });
+
+  if (outlines.length) {
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleRefresh, { passive: true });
+    window.addEventListener("load", scheduleRefresh, { once: true });
+
+    if ("ResizeObserver" in window) {
+      const observer = new ResizeObserver(scheduleRefresh);
+      outlines.forEach((entry) => observer.observe(entry.article));
+    }
+
+    updateAll();
+  }
 </script>
