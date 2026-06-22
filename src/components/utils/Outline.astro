@@ -9,7 +9,60 @@ interface Props {
 }
 
 const { toc } = Astro.props;
-const items = (toc ?? []).filter((h) => h.depth === 2 || h.depth === 3);
+const HEADING_LINE_HEIGHT = 1.25;
+const ITEM_GAP = 0.375;
+const INDENT_STEP = 1;
+const BASE_DOT_X = 0.4;
+const LINK_GAP = 0.85;
+const SVG_SCALE = 100;
+
+function formatRem(value: number): string {
+  return `${Number(value.toFixed(3))}rem`;
+}
+
+function dotSize(depth: number): number {
+  if (depth <= 2) return 0.45;
+  if (depth === 3) return 0.36;
+  return 0.28;
+}
+
+function dotX(depth: number): number {
+  return BASE_DOT_X + (depth - 2) * INDENT_STEP;
+}
+
+const headings = (toc ?? []).filter((h) => h.depth >= 2 && h.depth <= 6);
+const items = headings.map((h, index) => {
+  const next = headings[index + 1];
+  const size = dotSize(h.depth);
+  const x = dotX(h.depth);
+  const nextSize = next ? dotSize(next.depth) : size;
+  const nextX = next ? dotX(next.depth) : x;
+  const connectorHeight =
+    HEADING_LINE_HEIGHT + ITEM_GAP - (size + nextSize) / 2;
+  const connectorLeft = Math.min(x, nextX);
+  const connectorWidth = Math.abs(nextX - x);
+  const svgWidth = Math.max(connectorWidth, 0.001) * SVG_SCALE;
+  const svgHeight = connectorHeight * SVG_SCALE;
+  const startX = (x - connectorLeft) * SVG_SCALE;
+  const endX = (nextX - connectorLeft) * SVG_SCALE;
+
+  return {
+    ...h,
+    dotSize: formatRem(size),
+    dotX: formatRem(x),
+    paddingStart: formatRem(x + LINK_GAP),
+    connector: next
+      ? {
+          sameDepth: h.depth === next.depth,
+          left: formatRem(connectorLeft),
+          width: formatRem(connectorWidth),
+          height: formatRem(connectorHeight),
+          viewBox: `0 0 ${svgWidth} ${svgHeight}`,
+          path: `M ${startX} 0 C ${startX} ${svgHeight * 0.45}, ${endX} ${svgHeight * 0.55}, ${endX} ${svgHeight}`,
+        }
+      : null,
+  };
+});
 ---
 
 <outline-box class="outline-box relative block shrink-0 open">
@@ -29,8 +82,27 @@ const items = (toc ?? []).filter((h) => h.depth === 2 || h.depth === 3);
             <li
               class="outline-item relative"
               data-slug={h.slug}
-              style={`padding-inline-start:calc(${h.depth - 2} * 1rem + 1.25rem)`}
+              style={`--dot-size:${h.dotSize};--dot-x:${h.dotX};padding-inline-start:${h.paddingStart}`}
             >
+              {h.connector && (
+                <span
+                  class:list={[
+                    "outline-connector",
+                    h.connector.sameDepth ? "is-straight" : "is-curved",
+                  ]}
+                  style={`--connector-left:${h.connector.left};--connector-width:${h.connector.width};--connector-height:${h.connector.height}`}
+                  aria-hidden="true"
+                >
+                  {!h.connector.sameDepth && (
+                    <svg
+                      viewBox={h.connector.viewBox}
+                      preserveAspectRatio="none"
+                    >
+                      <path d={h.connector.path} />
+                    </svg>
+                  )}
+                </span>
+              )}
               <a
                 href={`#${h.slug}`}
                 class="outline-link block truncate opacity-70 hover:opacity-100"
@@ -46,25 +118,61 @@ const items = (toc ?? []).filter((h) => h.depth === 2 || h.depth === 3);
 </outline-box>
 
 <style>
-  .outline-list::before {
-    content: "";
-    position: absolute;
-    left: 0.4rem;
-    top: 0.5em;
-    bottom: 0.5em;
-    border-left: 1px solid currentColor;
-    opacity: 0.2;
+  .outline-list {
+    --dot-center-y: 0.75rem;
+    --outline-line-height: 1.25rem;
   }
   .outline-item::before {
     content: "";
     position: absolute;
-    left: calc(0.4rem - 0.2rem);
-    top: 0.7em;
-    width: 0.45rem;
-    height: 0.45rem;
+    z-index: 1;
+    left: calc(var(--dot-x) - var(--dot-size) / 2);
+    top: calc(var(--dot-center-y) - var(--dot-size) / 2);
+    width: var(--dot-size);
+    height: var(--dot-size);
     border-radius: 9999px;
     background: currentColor;
-    opacity: 0.35;
+  }
+  .outline-item {
+    min-height: var(--outline-line-height);
+    line-height: var(--outline-line-height);
+  }
+  .outline-connector {
+    position: absolute;
+    top: calc(var(--dot-center-y) + var(--dot-size) / 2);
+    left: var(--connector-left);
+    height: var(--connector-height);
+    color: currentColor;
+    opacity: 0.2;
+    pointer-events: none;
+
+    &.is-straight {
+      width: 0;
+      border-left: 1px solid currentColor;
+    }
+
+    &.is-curved {
+      width: var(--connector-width);
+
+      svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+
+      path {
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-width: 1px;
+        vector-effect: non-scaling-stroke;
+      }
+    }
+  }
+  .outline-link {
+    position: relative;
+    z-index: 1;
   }
   .outline-item.active::before {
     background: var(--accent, #2563eb);
@@ -92,7 +200,9 @@ const items = (toc ?? []).filter((h) => h.depth === 2 || h.depth === 3);
   document.querySelectorAll<HTMLElement>(".outline-box").forEach((box) => {
     const article = box.closest(".article-wrapper")?.querySelector(".article");
     if (!article) return;
-    const headings = article.querySelectorAll<HTMLElement>("h2[id], h3[id]");
+    const headings = article.querySelectorAll<HTMLElement>(
+      "h2[id], h3[id], h4[id], h5[id], h6[id]",
+    );
     if (!headings.length) return;
 
     const update = () => {
