@@ -4,6 +4,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import expressiveCode from 'astro-expressive-code';
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers';
+import rehypeHeadingAnchors from './src/markdown/rehype-heading-anchors';
 
 // https://astro.build/config
 export default defineConfig({
@@ -29,7 +30,7 @@ export default defineConfig({
 
   markdown: {
     remarkPlugins: ['remark-math'],
-    rehypePlugins: ['rehype-katex'],
+    rehypePlugins: ['rehype-katex', rehypeHeadingAnchors],
   },
 
   integrations: [

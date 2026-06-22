@@ -31,7 +31,7 @@ const page_width = "max-w-" + SITE.page_width;
   >
   {
     exclusive ? (
-      <h1>{frontmatter.title ?? item.slug}</h1>
+      <h1 id={item.slug}>{frontmatter.title ?? item.slug}</h1>
     ) : (
       <a
         href={item.slug}

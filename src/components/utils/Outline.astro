@@ -81,7 +81,7 @@ const items = headings.map((h, index) => {
           {items.map((h) => (
             <li
               class="outline-item relative"
-              data-slug={h.slug}
+              data-anchor={h.slug}
               style={`--dot-size:${h.dotSize};--dot-x:${h.dotX};padding-inline-start:${h.paddingStart}`}
             >
               {h.connector && (
@@ -215,7 +215,7 @@ const items = headings.map((h, index) => {
       box.querySelector(".outline-item.active")?.classList.remove("active");
       if (cur) {
         box
-          .querySelector(`.outline-item[data-slug="${cur.id}"]`)
+          .querySelector(`.outline-item[data-anchor="${CSS.escape(cur.id)}"]`)
           ?.classList.add("active");
       }
     };
