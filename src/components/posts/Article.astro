@@ -50,7 +50,7 @@ const hasMeta = publishedAt || updatedAt || tags.length > 0;
       hasMeta && (
         <post-meta class="my-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
           {(publishedAt || updatedAt) && (
-            <span class="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span class="min-w-0">
               {publishedAt && (
                 <span>
                   {t("article.published_at")}{" "}
@@ -68,7 +68,7 @@ const hasMeta = publishedAt || updatedAt || tags.length > 0;
           {tags.length > 0 && (
             <tag-list class="flex flex-wrap items-center gap-2">
               {tags.map((tag) => (
-                <post-tag class="border border-gray-200 px-2 py-0.5 text-xs text-gray-600 dark:border-gray-600 dark:text-gray-300">
+                <post-tag class="shrink-0 whitespace-nowrap border border-gray-200 px-2 py-0.5 text-xs text-gray-600 dark:border-gray-600 dark:text-gray-300">
                   {tag}
                 </post-tag>
               ))}
