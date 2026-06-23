@@ -6,6 +6,7 @@ export const SITE = {
   author: "Fuxi",
   favicon: "/favicon.png",
   header_width: "5xl",  // 3xl, 4xl(56rem), 5xl(64rem), 6xl(72rem), or 7xl
+  header_collapse_width: "48rem",
   page_width: "5xl",
   navs: [
     { key: "nav.posts", href: "posts" },

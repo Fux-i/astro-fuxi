@@ -19,6 +19,7 @@ const isActive = (href: string) => {
 };
 
 const page_width = "max-w-" + SITE.header_width;
+const headerCollapseWidth = SITE.header_collapse_width;
 const navs = SITE.navs;
 const socials = SITE.socials;
 
@@ -201,40 +202,17 @@ const iconBtn =
   const container = document.getElementById("header-container")!;
   const menuBtn = document.getElementById("menu-btn")!;
   const xBtn = document.getElementById("x-btn")!;
-  const menu = container.querySelector("menu")!;
-  let expandWidth = 60;
-  let collapsed = false;
-
-  for (const child of container.children) {
-    if (
-      child === menu ||
-      child.tagName === "PLACEHOLDER" ||
-      child.tagName === "TOGGLE-BTN"
-    )
-      continue;
-    expandWidth += (child as HTMLElement).offsetWidth;
-  }
-
-  function update(containerW: number) {
-    if (!collapsed) {
-      if (containerW <= expandWidth) {
-        collapsed = true;
-        container.classList.add("collapsed");
-      }
-    } else if (containerW > expandWidth) {
-      collapsed = false;
-      container.classList.remove("collapsed");
-      container.classList.remove("open");
-    }
-  }
-
-  new ResizeObserver((entries) => {
-    update(entries[0].contentRect.width);
-  }).observe(container);
+  const toggleBtn = container.querySelector("toggle-btn")!;
 
   const toggleMenu = () => container.classList.toggle("open");
   menuBtn.addEventListener("click", toggleMenu);
   xBtn.addEventListener("click", toggleMenu);
+
+  const closeMenuWhenExpanded = () => {
+    if (getComputedStyle(toggleBtn).display === "none")
+      container.classList.remove("open");
+  };
+  new ResizeObserver(closeMenuWhenExpanded).observe(container);
 
   // Hide on scroll down, show on scroll up
   const header = document.getElementById("site-header")!;
@@ -289,6 +267,9 @@ const iconBtn =
   }
 
   /* Responsive collapse */
+  #header-container {
+    container-type: inline-size;
+  }
   toggle-btn,
   menu {
     display: none;
@@ -300,39 +281,45 @@ const iconBtn =
   }
   #menu-btn {
     scale: 1;
-    /* at scale:1 → next move is shrink → ease-in */
     transition: scale 0.15s ease-in;
   }
   #x-btn {
     scale: 0;
     pointer-events: none;
-    /* at scale:0 → next move is grow → bounce */
     transition: scale 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  #header-container.collapsed {
-    & > nav,
-    & > tool-bar,
-    & > contacts,
-    & > placeholder {
+</style>
+
+<style
+  is:inline
+  set:html={`
+  @container (max-width: ${headerCollapseWidth}) {
+    #header-container > nav,
+    #header-container > tool-bar,
+    #header-container > contacts,
+    #header-container > placeholder {
       display: none;
     }
-    & > toggle-btn {
+
+    #header-container > toggle-btn {
       display: inline-flex;
     }
-    &.open > menu {
+
+    #header-container.open > menu {
       display: flex;
     }
-    &.open #menu-btn {
+
+    #header-container.open #menu-btn {
       scale: 0;
       pointer-events: none;
-      /* now at scale:0 → next move is grow → bounce */
       transition: scale 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    &.open #x-btn {
+
+    #header-container.open #x-btn {
       scale: 1;
       pointer-events: auto;
-      /* now at scale:1 → next move is shrink → ease-in */
       transition: scale 0.15s ease-in;
     }
   }
-</style>
+`}
+></style>
