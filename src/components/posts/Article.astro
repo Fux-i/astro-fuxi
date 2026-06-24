@@ -132,6 +132,30 @@ const hasMeta = publishedAt || updatedAt || tags.length > 0;
     opacity: 1;
     pointer-events: auto;
   }
+  :global(html),
+  :global(body) {
+    overflow-x: clip;
+  }
+  .outline-inset .sticky-rail {
+    inset: 1rem 1rem 0 auto;
+    width: min(18rem, calc(100% - 2rem));
+    z-index: 20;
+  }
+  .outline-inset .sticky-rail > .sticky {
+    top: 5rem;
+    width: 100%;
+    transform: none;
+  }
+  .outline-inset .outline-box {
+    width: 100%;
+  }
+  .outline-inset .outline-toggle {
+    margin-inline-start: auto;
+  }
+  .outline-inset .collapse-btn {
+    right: 3.25rem;
+    left: auto;
+  }
   .expanded {
     a.title-a {
       font-size: 2rem;
@@ -143,6 +167,7 @@ const hasMeta = publishedAt || updatedAt || tags.length > 0;
   document.querySelectorAll<HTMLButtonElement>(".fade-mask").forEach((mask) => {
     mask.addEventListener("click", () => {
       mask.closest(".article-wrapper")?.classList.add("expanded");
+      window.dispatchEvent(new CustomEvent("article-layout-change"));
     });
   });
   document
@@ -150,6 +175,7 @@ const hasMeta = publishedAt || updatedAt || tags.length > 0;
     .forEach((btn) => {
       btn.addEventListener("click", () => {
         btn.closest(".article-wrapper")?.classList.remove("expanded");
+        window.dispatchEvent(new CustomEvent("article-layout-change"));
       });
     });
 </script>
