@@ -99,6 +99,8 @@ const iconBtn =
         type="button"
         title={t("btn.menu")}
         id="menu-btn"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
         class:list={[iconBtn, "absolute inset-0"]}
       >
         <IconMenuDeep class="size-7" />
@@ -107,6 +109,7 @@ const iconBtn =
         type="button"
         title={t("btn.x")}
         id="x-btn"
+        aria-controls="mobile-menu"
         class:list={[iconBtn, "absolute inset-0"]}
       >
         <IconX class="size-7" />
@@ -114,6 +117,7 @@ const iconBtn =
     </toggle-btn>
 
     <menu
+      id="mobile-menu"
       class="absolute right-0 top-12 bg-white dark:bg-gray-900 rounded-2xl border-gray-500 border overflow-hidden p-2 flex-col"
     >
       <nav class="flex flex-col items-center w-40 mb-1">
@@ -167,6 +171,8 @@ const iconBtn =
 </header>
 
 <script>
+  import { dismissWhenInactive } from "@/components/utils/dismissible";
+
   type Theme = "system" | "light" | "dark";
   const KEY = "theme";
   const order: Theme[] = ["system", "light", "dark"];
@@ -204,13 +210,24 @@ const iconBtn =
   const xBtn = document.getElementById("x-btn")!;
   const toggleBtn = container.querySelector("toggle-btn")!;
 
-  const toggleMenu = () => container.classList.toggle("open");
+  const isHeaderCollapsed = () => getComputedStyle(toggleBtn).display !== "none";
+  const setMenuOpen = (open: boolean) => {
+    container.classList.toggle("open", open);
+    menuBtn.setAttribute("aria-expanded", String(open));
+  };
+  const toggleMenu = () => setMenuOpen(!container.classList.contains("open"));
   menuBtn.addEventListener("click", toggleMenu);
-  xBtn.addEventListener("click", toggleMenu);
+  xBtn.addEventListener("click", () => setMenuOpen(false));
+
+  dismissWhenInactive({
+    root: container,
+    isOpen: () => container.classList.contains("open"),
+    close: () => setMenuOpen(false),
+    isEnabled: isHeaderCollapsed,
+  });
 
   const closeMenuWhenExpanded = () => {
-    if (getComputedStyle(toggleBtn).display === "none")
-      container.classList.remove("open");
+    if (!isHeaderCollapsed()) setMenuOpen(false);
   };
   new ResizeObserver(closeMenuWhenExpanded).observe(container);
 

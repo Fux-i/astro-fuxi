@@ -1,3 +1,5 @@
+import { dismissWhenInactive } from "./dismissible";
+
 const peekTimers = new WeakMap<HTMLElement, number>();
 const PEEK_CLOSE_DELAY = 220;
 const REFRESH_DEBOUNCE_DELAY = 120;
@@ -31,6 +33,20 @@ function clearPeekTimer(box: HTMLElement) {
 function openPeek(box: HTMLElement) {
   clearPeekTimer(box);
   box.classList.add("is-peeking");
+}
+
+function setOpen(box: HTMLElement, open: boolean) {
+  box.classList.toggle("open", open);
+  box
+    .querySelector<HTMLElement>(".outline-toggle")
+    ?.setAttribute("aria-expanded", String(open));
+}
+
+function isInset(box: HTMLElement) {
+  return (
+    box.closest<HTMLElement>(".article-wrapper")?.dataset.outlinePlacement ===
+    "inset"
+  );
 }
 
 function closePeekLater(box: HTMLElement) {
@@ -127,7 +143,7 @@ function setPlacement(entry: OutlineEntry) {
 
   if (placement === "inset" && previous !== "inset") {
     if (entry.box.classList.contains("open")) {
-      entry.box.classList.remove("open");
+      setOpen(entry.box, false);
       entry.box.dataset.closedByPlacement = "true";
     }
     return;
@@ -135,7 +151,7 @@ function setPlacement(entry: OutlineEntry) {
 
   if (placement !== "inset" && previous === "inset") {
     if (entry.box.dataset.closedByPlacement === "true") {
-      entry.box.classList.add("open");
+      setOpen(entry.box, true);
       delete entry.box.dataset.closedByPlacement;
     }
   }
@@ -188,16 +204,23 @@ export function initOutline() {
         const box = btn.closest<HTMLElement>(".outline-box");
         if (!box) return;
 
-        box.classList.toggle("open");
+        setOpen(box, !box.classList.contains("open"));
         delete box.dataset.closedByPlacement;
       });
     });
 
   document.querySelectorAll<HTMLElement>(".outline-box").forEach((box) => {
+    setOpen(box, box.classList.contains("open"));
     box.addEventListener("pointerenter", () => openPeek(box));
     box.addEventListener("pointerleave", () => closePeekLater(box));
     box.addEventListener("focusin", () => openPeek(box));
     box.addEventListener("focusout", () => closePeekLater(box));
+    dismissWhenInactive({
+      root: box,
+      isOpen: () => box.classList.contains("open"),
+      close: () => setOpen(box, false),
+      isEnabled: () => isInset(box),
+    });
 
     const wrapper = box.closest<HTMLElement>(".article-wrapper");
     const article = wrapper?.querySelector(".article");
