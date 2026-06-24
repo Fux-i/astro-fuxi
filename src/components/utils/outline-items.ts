@@ -48,13 +48,13 @@ export function buildOutlineItems(toc: MarkdownHeading[] = []) {
       paddingStart: formatRem(x + LINK_GAP),
       connector: next
         ? {
-            sameDepth: h.depth === next.depth,
-            left: formatRem(connectorLeft),
-            width: formatRem(connectorWidth),
-            height: formatRem(connectorHeight),
-            viewBox: `0 0 ${svgWidth} ${svgHeight}`,
-            path: `M ${startX} 0 C ${startX} ${svgHeight * 0.45}, ${endX} ${svgHeight * 0.55}, ${endX} ${svgHeight}`,
-          }
+          sameDepth: h.depth === next.depth,
+          left: formatRem(connectorLeft),
+          width: formatRem(connectorWidth),
+          height: formatRem(connectorHeight),
+          viewBox: `0 0 ${svgWidth} ${svgHeight}`,
+          path: `M ${startX} 0 C ${startX} ${svgHeight * 0.45}, ${endX} ${svgHeight * 0.55}, ${endX} ${svgHeight}`,
+        }
         : null,
     };
   });

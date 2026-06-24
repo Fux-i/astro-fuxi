@@ -1,5 +1,6 @@
 const peekTimers = new WeakMap<HTMLElement, number>();
 const PEEK_CLOSE_DELAY = 220;
+const REFRESH_DEBOUNCE_DELAY = 120;
 const EDGE_MARGIN = 16;
 const RAIL_OFFSET = 16;
 
@@ -241,6 +242,7 @@ export function initOutline() {
   }
 
   let refreshRaf = 0;
+  let refreshTimer = 0;
   function scheduleRefresh() {
     if (refreshRaf) return;
     refreshRaf = requestAnimationFrame(() => {
@@ -253,13 +255,18 @@ export function initOutline() {
     });
   }
 
+  function scheduleDebouncedRefresh() {
+    window.clearTimeout(refreshTimer);
+    refreshTimer = window.setTimeout(scheduleRefresh, REFRESH_DEBOUNCE_DELAY);
+  }
+
   window.addEventListener("scroll", scheduleUpdate, { passive: true });
-  window.addEventListener("resize", scheduleRefresh, { passive: true });
-  window.addEventListener("article-layout-change", scheduleRefresh);
+  window.addEventListener("resize", scheduleDebouncedRefresh, { passive: true });
+  window.addEventListener("article-layout-change", scheduleDebouncedRefresh);
   window.addEventListener("load", scheduleRefresh, { once: true });
 
   if ("ResizeObserver" in window) {
-    const observer = new ResizeObserver(scheduleRefresh);
+    const observer = new ResizeObserver(scheduleDebouncedRefresh);
     outlines.forEach((entry) => observer.observe(entry.article));
   }
 
